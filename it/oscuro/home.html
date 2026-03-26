@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth" style="overflow-x: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Coulouban - Il Traduttore dell'Invisibile</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <!-- Polices -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Fond Nuit Profonda */
+        html, body { max-width: 100%; overflow-x: hidden; background-color: #030305; color: #fdfcf8; }
+        
+        body { font-family: 'Montserrat', sans-serif; font-weight: 300; }
+        h1, h2, h3, .font-title { font-family: 'Cormorant Garamond', serif; }
+        
+        /* LA CORRECTION EST ICI : z-index: 0 pour être devant le fond noir ! */
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; opacity: 0.8; }
+        
+        /* Voile de transition noir */
+        #page-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #030305; z-index: 9999; pointer-events: none; transition: opacity 1.5s ease-in-out; }
+        
+        /* Apparition au scroll */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* Ombre pour il testo */
+        .text-glow { text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.8); }
+
+        /* Colori personalizzati per i link */
+        .color-propos { color: #8b5cf6; } /* Violet */
+        .color-poesie { color: #f59e0b; } /* Giallo/Oro */
+        .color-galerie { color: #ef4444; } /* Rosso */
+        .color-experience { color: #10b981; } /* Verde */
+        .color-contact { color: #06b6d4; } /* Ciano */
+    </style>
+</head>
+<body class="antialiased selection:bg-cyan-700 selection:text-white flex flex-col min-h-screen">
+
+    <div id="page-transition"></div>
+    <div id="canvas-container"></div>
+
+    <!-- NAVBAR (z-index 50 per essere davanti il canvas) -->
+    <nav class="fixed w-full z-50 text-white bg-black/10 backdrop-blur-sm border-b border-white/5 relative">
+        
+        <div class="max-w-7xl mx-auto px-6 md:px-8 py-6 flex justify-center md:justify-between items-center gap-4 md:gap-6 w-full">
+            <div class="flex items-center gap-4 md:gap-6">
+            <a href="home.html" class="text-3xl font-title tracking-widest uppercase hover:opacity-70 transition-opacity text-white">Coulouban</a>
+            <div class="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase font-medium border-l border-white/20 pl-4 md:pl-6 text-white">
+                <a href="../../fr/clair/home.html" class="text-white/60 hover:text-white transition-colors">FR</a>
+                <span class="text-white/40">/</span>
+                <a href="../../en/dark/home.html" class="text-white/60 hover:text-white transition-colors">EN</a>
+                <span class="text-white/40">/</span>
+                <a href="../../es/oscuro/home.html" class="text-white/60 hover:text-white transition-colors">ES</a>
+                <span class="text-white/40">/</span>
+                <a href="home.html" class="text-white hover:text-white transition-colors">IT</a>
+            </div>
+            </div>
+
+            <div class="hidden md:flex space-x-8 text-[10px] md:text-xs uppercase tracking-[0.3em] font-medium">
+                <a href="storia.html" class="color-propos hover:text-white transition-colors drop-shadow-md">La Storia</a>
+                <a href="poesia.html" class="color-poesie hover:text-white transition-colors drop-shadow-md">La Poesia</a>
+                <a href="galleria.html" class="color-galerie hover:text-white transition-colors drop-shadow-md">La Galleria</a>
+                <a href="esperienza.html" class="color-experience hover:text-white transition-colors drop-shadow-md">L'Esperienza</a>
+                <a href="contatti.html" class="color-contact hover:text-white transition-colors drop-shadow-md">Contatti</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL (z-index 10 per essere davanti il canvas) -->
+    <main class="relative z-10 flex-grow w-full overflow-hidden">
+        
+        <!-- 0. INTRO -->
+        <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-24 pb-20">
+            <p class="text-[10px] md:text-sm tracking-[0.5em] text-cyan-500 uppercase mb-8 md:mb-12 reveal text-glow">
+                Il Traduttore dell'Invisibile
+            </p>
+            
+            <h1 class="font-title leading-tight reveal w-full text-glow" style="transition-delay: 200ms;">
+                <span class="block font-sans text-sm sm:text-xl md:text-2xl font-light tracking-[0.3em] uppercase color-poesie mb-4 md:mb-8">
+                    Nominare l'esperienza.
+                </span>
+                <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-white mb-2">
+                    Dipingere la musica.
+                </span>
+                <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl italic text-gray-400">
+                    Fare cantare la luce.
+                </span>
+            </h1>
+        </section>
+
+        <!-- 1. À PROPOS -->
+        <section class="min-h-screen flex items-center md:justify-start px-6 md:px-24">
+            <div class="max-w-xl reveal text-center md:text-left mx-auto md:mx-0 text-glow">
+                <span class="text-[10px] md:text-xs tracking-[0.4em] color-propos uppercase mb-4 block">Capitolo I</span>
+                <h2 class="text-4xl md:text-6xl font-title mb-6 leading-tight text-white">La Metamorfosi<br>del Silenzio</h2>
+                <p class="text-base md:text-lg font-light text-gray-300 mb-8 leading-relaxed">
+                    Sette anni fa, Lucien scomparve dietro la roccia. Nel ventre di una caverna, lontano dagli orologi, iniziò una conversazione con il silenzio. Il tempo dell'apprendimento fu spazzato via dalla necessità del respiro.
+                </p>
+                <a href="storia.html" class="uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium color-propos border-b border-violet-500 pb-2 hover:text-white hover:border-white transition-all">Scoprire la storia</a>
+            </div>
+        </section>
+
+        <!-- 2. POÉSIE -->
+        <section class="min-h-screen flex items-center md:justify-end px-6 md:px-24 text-center md:text-right">
+            <div class="max-w-xl reveal mx-auto md:mx-0 text-glow">
+                <span class="text-[10px] md:text-xs tracking-[0.4em] color-poesie uppercase mb-4 block">Capitolo II</span>
+                <h2 class="text-4xl md:text-6xl font-title mb-6 leading-tight text-white">L'Inchiostro<br>e il Respiro</h2>
+                <p class="text-base md:text-lg font-light text-gray-300 mb-8 leading-relaxed">
+                    Prima della nota e del colore, c'è la necessità di nominare. Le parole non sono semplici riflessi, sono l'origine. Le poesie di Coulouban sono preghiere laiche sdraiate sulla carta.
+                </p>
+                <a href="poesia.html" class="uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium color-poesie border-b border-amber-500 pb-2 hover:text-white hover:border-white transition-all">Leggere i frammenti</a>
+            </div>
+        </section>
+
+        <!-- 3. GALERIE -->
+        <section class="min-h-screen flex items-center md:justify-start px-6 md:px-24 text-center md:text-left">
+            <div class="max-w-xl reveal mx-auto md:mx-0 text-glow">
+                <span class="text-[10px] md:text-xs tracking-[0.4em] color-galerie uppercase mb-4 block">Capitolo III</span>
+                <h2 class="text-4xl md:text-6xl font-title mb-6 leading-tight text-white">L'Acquerello<br>dei Suoni</h2>
+                <p class="text-base md:text-lg font-light text-gray-300 mb-8 leading-relaxed">
+                    La frontiera tra le arti non esiste. Quello che sente nel segreto del suo spirito è una simmetria matematica. Se non la suona, la dipinge. Le sue tele sono i volti delle sue melodie.
+                </p>
+                <a href="galleria.html" class="uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium color-galerie border-b border-red-500 pb-2 hover:text-white hover:border-white transition-all">Esplorare le icone</a>
+            </div>
+        </section>
+
+        <!-- 4. L'EXPÉRIENCE -->
+        <section class="min-h-screen flex items-center md:justify-end px-6 md:px-24 text-center md:text-right pb-32">
+            <div class="max-w-xl reveal mx-auto md:mx-0 text-glow">
+                <span class="text-[10px] md:text-xs tracking-[0.4em] color-experience uppercase mb-4 block">Capitolo IV</span>
+                <h2 class="text-4xl md:text-6xl font-title mb-6 leading-tight text-white">Abbandonare la<br>Verticale</h2>
+                <p class="text-base md:text-lg font-light text-gray-300 mb-8 leading-relaxed">
+                    Il suo fisarmonica non è uno strumento, è un diffusore di frequenze. Nei suoi concerti, lo spazio si dilata. Il pubblico si allunga, si abbandona e si immerge in uno stato ipnotico.
+                </p>
+                <a href="esperienza.html" class="uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium color-experience border-b border-emerald-500 pb-2 hover:text-white hover:border-white transition-all">Vivere l'esperienza</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER (z-index 20 per essere davanti il canvas) -->
+    <footer class="w-full bg-[#030305] border-t border-white/10 text-white py-16 mt-auto z-20 relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center md:items-start space-y-10 md:space-y-0 text-center md:text-left">
+            <div class="flex flex-col items-center md:items-start space-y-4">
+                <span class="text-3xl font-title tracking-widest uppercase">Coulouban</span>
+                <span class="text-xs font-light tracking-[0.2em] text-gray-500 uppercase">Il Traduttore dell'Invisibile</span>
+                <p class="text-[10px] tracking-[0.1em] text-gray-600 uppercase pt-4">© 2026 Coulouban. Tutti i diritti riservati.</p>
+            </div>
+            <div class="flex flex-col items-center md:items-start space-y-3 text-xs tracking-[0.2em] uppercase font-medium">
+                <a href="storia.html" class="color-propos hover:text-white transition-colors">La Storia</a>
+                <a href="poesia.html" class="color-poesie hover:text-white transition-colors">La Poesia</a>
+                <a href="galleria.html" class="color-galerie hover:text-white transition-colors">Le Opere</a>
+                <a href="esperienza.html" class="color-experience hover:text-white transition-colors">I Concerti</a>
+                <a href="contatti.html" class="color-contact hover:text-white transition-colors">Contatti</a>
+                <a href="https://coulouban.shopify.com" target="_blank" class="text-orange-500 hover:text-white transition-colors mt-2">Negozio</a>
+            </div>
+            <div class="flex space-x-6 items-center">
+                <a href="https://www.instagram.com/coulouban369/" target="_blank" class="text-gray-400 hover:text-cyan-400 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.77-6.98 6.276C.014 8.336 0 8.744 0 12c0 3.259.014 3.667.072 4.947.2 4.358 1.77 6.78 6.276 6.98 1.28.058 1.689.072 4.947.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.771 6.979-6.276.059-1.28.073-1.689.073-4.947 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.778-6.78-6.276-6.98-1.28-.058-1.688-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+                <a href="https://www.youtube.com/@coulouban369" target="_blank" class="text-gray-400 hover:text-cyan-400 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Transition Init
+        window.addEventListener('load', () => { setTimeout(() => { document.getElementById('page-transition').style.opacity = '0'; }, 100); });
+        const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // =========================================================
+        // L'ONDE DE LUMIÈRE (Spherical Harmonics / Cymatics 3D)
+        // Magnifique effet floral multicolore garanti sans coupure
+        // =========================================================
+
+        let scene, camera, renderer, resonantMesh;
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+        const halfX = window.innerWidth / 2, halfY = window.innerHeight / 2;
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+            
+            // Caméra avec un très léger plongé pour admirer les détails de la corolle
+            camera.position.y = 150; 
+            camera.position.z = 700; 
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            const pixelRatio = Math.min(window.devicePixelRatio, 1.5);
+            renderer.setPixelRatio(pixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Construction : Un nuage sphérique très très dense (80,000 points !)
+            // Ne causera aucun lag car tous les déplacements se feront en mathématiques pures (Shader).
+            const count = 80000;
+            const geo = new THREE.BufferGeometry();
+            
+            // Note: In THREE.js geometry generation, creating simple base parameters inside an attribute buffer guarantees stability.
+            const basePhis = new Float32Array(count);
+            const baseThetas = new Float32Array(count);
+            const randoms = new Float32Array(count);
+
+            for (let i = 0; i < count; i++) {
+                // Algorithme de placement uniforme sphérique 
+                const phi = Math.acos(-1.0 + (2.0 * i) / count);
+                const theta = Math.sqrt(count * Math.PI) * phi;
+                
+                basePhis[i] = phi;
+                baseThetas[i] = theta;
+                randoms[i] = Math.random();
+            }
+
+            geo.setAttribute('aPhi', new THREE.BufferAttribute(basePhis, 1));
+            geo.setAttribute('aTheta', new THREE.BufferAttribute(baseThetas, 1));
+            geo.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
+
+            // Pour s'assurer qu'aucun crash n'arrive, l'attribut "position" natif de Three.js
+            // reçoit juste des coordonnées de la sphère de base (le VShader va tordre ces coordonnées).
+            const nullPositions = new Float32Array(count * 3).fill(0);
+            geo.setAttribute('position', new THREE.BufferAttribute(nullPositions, 3));
+
+            // ----------------------------------------------------
+            // SHADER: Le Moteur Fréquentiel
+            // Transforme mathématiquement une sphère classique en Onde Tridimensionnelle 
+            // inspirée des vibrations sonores de cymatique. (Des "mandales acoustiques").
+            // ----------------------------------------------------
+            const vShader = `
+                uniform float uTime;
+                uniform float uPixelRatio;
+                attribute float aPhi;
+                attribute float aTheta;
+                attribute float aRandom;
+                
+                varying float vElevation; // Servira à attribuer la bonne couleur selon la hauteur et profondeur
+                varying float vAlpha;
+
+                void main() {
+                    float baseRadius = 180.0;
+                    
+                    // La Mathématique Sacrée / Fleur Cymatique (La Respiration)
+                    // Multiplicateur : Forme les pétales sonores qui ouvrent la structure.
+                    // n = 5 vagues de longueur, m = 4 spirales entremêlées.
+                    float waveDistortion = 1.0 
+                        + 0.5 * sin(aPhi * 4.0 + uTime) 
+                        * cos(aTheta * 5.0 - uTime * 1.5)
+                        + 0.15 * sin(aPhi * 12.0); // Les très fines ondulations des bouts
+                    
+                    float finalRadius = baseRadius * waveDistortion;
+                    
+                    // Construction classique d'une position cartésienne
+                    vec3 finalPos;
+                    finalPos.x = finalRadius * sin(aPhi) * cos(aTheta);
+                    finalPos.y = finalRadius * cos(aPhi); // Base Y 
+                    finalPos.z = finalRadius * sin(aPhi) * sin(aTheta);
+                    
+                    // Léger éparpillement ("Bruit de Particule")
+                    vec3 noiseOffset = normalize(finalPos) * aRandom * 12.0;
+                    finalPos += noiseOffset;
+
+                    vec4 mvPos = modelViewMatrix * vec4(finalPos, 1.0);
+                    gl_Position = projectionMatrix * mvPos;
+                    
+                    float safeZ = max(-mvPos.z, 1.0);
+                    // Points minuscules (1.2), hyper élégants, semblables à de l'Aquarelle Cosmique.
+                    gl_PointSize = (1.2 + aRandom * 0.8) * uPixelRatio * (600.0 / safeZ);
+                    
+                    // Transmission de la valeur de déformation pour pouvoir lier 
+                    // de l'Encre Violet/Or dans les extrémités au niveau du fragment shader.
+                    vElevation = waveDistortion; 
+                    vAlpha = 0.5 + 0.5 * sin(uTime * 3.0 + aRandom * 10.0);
+                }
+            `;
+
+            // Le Shaders coloré à la main (Plus beau et fiable). On crée la palette !
+            const fShader = `
+                uniform vec3 colorLow;
+                uniform vec3 colorMid;
+                uniform vec3 colorHigh;
+                varying float vElevation;
+                varying float vAlpha;
+
+                void main() {
+                    // Petits disques très parfaits.
+                    float dist = distance(gl_PointCoord, vec2(0.5));
+                    if (dist > 0.5) discard;
+                    
+                    vec3 c = colorMid;
+                    // Lier les hauteurs aux trois niveaux (Cœur en retrait, Parois de la sphère, "Pétales" gonflés).
+                    if (vElevation < 1.0) {
+                        float blend = smoothstep(0.5, 1.0, vElevation);
+                        c = mix(colorLow, colorMid, blend);
+                    } else {
+                        float blend = smoothstep(1.0, 1.65, vElevation); // L'expansion va environ à +0.65 au dessus
+                        c = mix(colorMid, colorHigh, blend);
+                    }
+
+                    float intensity = (0.5 - dist) * 2.0;
+                    gl_FragColor = vec4(c, intensity * vAlpha);
+                }
+            `;
+
+            // Les nouvelles palettes néon pures ! 
+            // - Si les points se contractent (cœur musical interne) : Violet de Nuit / Bleu (#4c1d95)
+            // - Sphère Normale : Cyan néon parfait de "Contact" / Base d'accordéon (#06b6d4).
+            // - Sommets projetés ("Le cri des pointes", Expansion) : Ambre vif ou le beau rouge de votre thème, on va avec un mélange chaud Cuivre / Rubis (#ef4444 -> feu).
+            
+            const material = new THREE.ShaderMaterial({
+                vertexShader: vShader, fragmentShader: fShader,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uPixelRatio: { value: pixelRatio },
+                    colorLow: { value: new THREE.Color('#6b21a8') }, // Purple très chaud/profond
+                    colorMid: { value: new THREE.Color('#06b6d4') }, // Cyan intense du texte 
+                    colorHigh: { value: new THREE.Color('#ef4444') } // Jaune / Vermillon. Les bords extérieurs chauffent littéralement.
+                },
+                transparent: true, depthWrite: false, blending: THREE.AdditiveBlending // Glow magique 
+            });
+
+            resonantMesh = new THREE.Points(geo, material);
+            scene.add(resonantMesh);
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - halfX) * 0.001;
+                mouseY = (e.clientY - halfY) * 0.001;
+            });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        const clock = new THREE.Clock();
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            const time = clock.getElapsedTime();
+            
+            // Le système complet réagit à la main comme si un musicien tenait la souris.
+            targetX = mouseX * 2.0; 
+            targetY = mouseY * 2.0;
+            
+            resonantMesh.rotation.x += 0.03 * (targetY - resonantMesh.rotation.x);
+            resonantMesh.rotation.y += 0.03 * (targetX - resonantMesh.rotation.y);
+            
+            // Très belle dérive autonome globale pour maintenir l'aspect intemporel
+            resonantMesh.rotation.z += 0.001;
+
+            // Important: Envoyer l'information temporelle permet à toute cette structure à la Chladni de s'éveiller. 
+            resonantMesh.material.uniforms.uTime.value = time * 0.7; // Légèrement lent et cérémonieux
+
+            renderer.render(scene, camera);
+        }
+
+        init3D();
+        animate3D();
+    </script>
+</body>
+</html>

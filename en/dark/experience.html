@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" style="overflow-x: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Experience - Coulouban</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <!-- Polices -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Cosmos Base */
+        html, body { max-width: 100%; overflow-x: hidden; background-color: #030305; color: #fdfcf8; }
+        
+        body { font-family: 'Montserrat', sans-serif; font-weight: 300; }
+        h1, h2, h3, .font-title { font-family: 'Cormorant Garamond', serif; }
+        
+        /* THE CANVAS Z-0 GARANTY (Background Display Security) */
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; opacity: 0.95; }
+        
+        #page-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #030305; z-index: 9999; pointer-events: none; transition: opacity 1.5s ease-in-out; }
+        
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .text-glow { text-shadow: 0 4px 30px rgba(0, 0, 0, 1), 0 0 50px rgba(0, 0, 0, 0.9); }
+
+        /* Couleurs du Nav */
+        .color-propos { color: #8b5cf6; } 
+        .color-poesie { color: #f59e0b; } 
+        .color-galerie { color: #ef4444; } 
+        .color-experience { color: #10b981; } /* Eméraude Fréquence Musicale Actif ! */
+        .color-contact { color: #06b6d4; } 
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-700 selection:text-white flex flex-col min-h-screen">
+
+    <div id="page-transition"></div>
+    <div id="canvas-container"></div>
+
+    <nav class="fixed w-full z-50 text-white bg-black/20 backdrop-blur-md border-b border-white/5 relative">
+                
+
+        <div class="max-w-7xl mx-auto px-6 md:px-8 py-6 flex justify-center md:justify-between items-center gap-4 md:gap-6 w-full">
+            <div class="flex items-center gap-4 md:gap-6">
+            <a href="home.html" class="text-3xl font-title tracking-widest uppercase hover:opacity-70 transition-opacity text-white">Coulouban</a>
+            <div class="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase font-medium border-l border-white/20 pl-4 md:pl-6 text-white">
+                <a href="../../fr/obscur/experience.html" class="text-white/60 hover:text-white transition-colors">FR</a>
+                <span class="text-white/40">/</span>
+                <span class="text-white">EN</span>
+                <span class="text-white/40">/</span>
+                <a href="../../es/oscuro/experiencia.html" class="text-white/60 hover:text-white transition-colors">ES</a>
+                <span class="text-white/40">/</span>
+                <a href="../../it/oscuro/esperienza.html" class="text-white/60 hover:text-white transition-colors">IT</a>
+            </div>
+            </div>
+
+            <div class="hidden md:flex space-x-8 text-[10px] md:text-xs uppercase tracking-[0.3em] font-medium">
+                <a href="story.html" class="color-propos hover:text-white transition-colors drop-shadow-md">The Story</a>
+                <a href="poetry.html" class="color-poesie hover:text-white transition-colors drop-shadow-md">Poetry</a>
+                <a href="gallery.html" class="color-galerie hover:text-white transition-colors drop-shadow-md">Gallery</a>
+                <a href="experience.html" class="color-experience drop-shadow-md border-b border-emerald-400 pb-1">The Experience</a>
+                <a href="contact.html" class="color-contact hover:text-white transition-colors drop-shadow-md">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT z-10 over WebGL canvas -->
+    <main class="relative z-10 pt-40 pb-32 px-6 md:px-12 max-w-7xl mx-auto flex flex-col space-y-40 flex-grow w-full">
+        
+        <header class="max-w-3xl text-left reveal text-glow">
+            <p class="text-[10px] md:text-xs tracking-[0.4em] color-experience uppercase mb-6 drop-shadow-sm">The Frequency</p>
+            <h1 class="text-5xl md:text-7xl font-title leading-tight mb-8 text-white">
+                Leaving <br>
+                <span class="italic text-gray-500">the vertical.</span>
+            </h1>
+        </header>
+
+        <!-- Block 1 -->
+        <section class="max-w-xl reveal text-glow">
+            <h2 class="text-4xl font-title mb-8 text-white">The Transmuted Accordion</h2>
+            <div class="font-light text-gray-300 leading-relaxed text-lg space-y-6">
+                <p>
+                    Coulouban’s accordion is no longer a ballroom or party instrument. In his hands it has become a frequency diffuser, a weapon of gentleness deployed against modern chaos.
+                </p>
+                <p>
+                    This is music that does not seek to entertain, but to enfold. Notes stretch, breathe, and create a space where time seems suspended.
+                </p>
+            </div>
+        </section>
+
+        <!-- Block 2 -->
+        <section class="max-w-xl reveal self-end text-right text-glow mt-12">
+            <h2 class="text-4xl font-title mb-8 text-white">An Experience of Clarity</h2>
+            <div class="font-light text-gray-300 leading-relaxed text-lg space-y-6">
+                <p>
+                    Seated on his stool, walking among the stars or surrounded by his canvases, Coulouban transforms the atmosphere. In his concerts, space expands.
+                </p>
+                <p>
+                    The audience is invited to leave the upright posture—to lie on mats, close their eyes, let go, and sink into a hypnotic state. It is a collective meditation where sound lights the shadowed places.
+                </p>
+            </div>
+        </section>
+
+        <!-- Block 3 -->
+        <section class="max-w-2xl mx-auto text-center reveal text-glow mt-20">
+            <h2 class="text-4xl font-title mb-8 text-white">The Call of the Sky</h2>
+            <div class="font-light text-gray-300 leading-relaxed text-lg space-y-6">
+                <p>
+                    A hybrid, self-contained performance, this acoustic concert adapts to places of grace: resonant chapels, gardens at dawn, art galleries, or open-air spaces.
+                </p>
+                <p>
+                    It is a stopover—an invitation to recover, for the length of a listen, the depth and sacred mystery of our own existence.
+                </p>
+            </div>
+        </section>
+
+        <!-- BUTTONS / FINAL -->
+        <section class="text-center reveal mt-10">
+            <div class="flex flex-col items-center space-y-12">
+                
+                <p class="text-[10px] md:text-xs tracking-[0.3em] uppercase text-gray-400 mb-2 drop-shadow-sm text-glow">Listen and watch</p>
+
+                <div class="flex flex-col md:flex-row flex-wrap gap-4 md:gap-6 justify-center items-center w-full max-w-4xl">
+                    <a href="https://www.youtube.com/@coulouban369" target="_blank" class="inline-block border border-white/30 bg-black/40 backdrop-blur-sm px-6 py-3 uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium text-white hover:bg-emerald-500 hover:text-black hover:border-emerald-500 transition-all duration-500 shadow-xl">
+                        Visit the YouTube channel
+                    </a>
+                    <!-- Replace with standard spotify track URL -->
+                    <a href="#" target="_blank" class="inline-block border border-white/30 bg-black/40 backdrop-blur-sm px-6 py-3 uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium text-white hover:bg-emerald-500 hover:text-black hover:border-emerald-500 transition-all duration-500 shadow-xl">
+                        Listen on Spotify
+                    </a>
+                    <a href="../../docs/dossierpresse.pdf" target="_blank" class="inline-block border border-white/30 bg-black/40 backdrop-blur-sm px-6 py-3 uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium text-white hover:bg-emerald-500 hover:text-black hover:border-emerald-500 transition-all duration-500 shadow-xl">
+                        Download the press kit
+                    </a>
+                </div>
+
+                <div class="pt-16 border-t border-white/10 w-full max-w-lg mx-auto">
+                    <p class="text-sm font-light text-gray-400 mb-8 text-glow">
+                        To arrange a performance, an exhibition, or an immersive concert.
+                    </p>
+                    <a href="contact.html" class="inline-block border border-cyan-400 bg-black/40 backdrop-blur-sm px-12 py-5 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold color-contact hover:text-white transition-colors drop-shadow-md">
+                        Get in touch
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- OFFICIAL COMPACT FOOTER -->
+    <footer class="w-full bg-[#020203] border-t border-white/10 text-white py-16 mt-auto z-20 relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center md:items-start space-y-10 md:space-y-0 text-center md:text-left">
+            <div class="flex flex-col items-center md:items-start space-y-4">
+                <span class="text-3xl font-title tracking-widest uppercase">Coulouban</span>
+                <span class="text-xs font-light tracking-[0.2em] text-gray-500 uppercase">The Translator of the Invisible</span>
+                <p class="text-[10px] tracking-[0.1em] text-gray-600 uppercase pt-4">© 2026 Coulouban. All rights reserved.</p>
+            </div>
+            <div class="flex flex-col items-center md:items-start space-y-3 text-xs tracking-[0.2em] uppercase font-medium">
+                <a href="story.html" class="color-propos hover:text-white transition-colors">The Story</a>
+                <a href="poetry.html" class="color-poesie hover:text-white transition-colors">Poetry</a>
+                <a href="gallery.html" class="color-galerie hover:text-white transition-colors">The Works</a>
+                <a href="experience.html" class="color-experience hover:text-white transition-colors">Concerts</a>
+                <a href="contact.html" class="color-contact hover:text-white transition-colors">Contact</a>
+                <a href="https://coulouban.shopify.com" target="_blank" class="text-orange-500 hover:text-white transition-colors mt-2">Shop</a>
+            </div>
+            <div class="flex space-x-6 items-center">
+                <a href="https://www.instagram.com/coulouban369/" target="_blank" class="text-gray-400 hover:text-emerald-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.77-6.98 6.276C.014 8.336 0 8.744 0 12c0 3.259.014 3.667.072 4.947.2 4.358 1.77 6.78 6.276 6.98 1.28.058 1.689.072 4.947.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.771 6.979-6.276.059-1.28.073-1.689.073-4.947 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.778-6.78-6.276-6.98-1.28-.058-1.688-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+                <a href="#" target="_blank" class="text-gray-400 hover:text-emerald-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.521 17.34c-.24.394-.756.522-1.15.281-3.15-1.926-7.114-2.361-11.782-1.293-.453.104-.913-.18-1.018-.632-.104-.453.18-.913.633-1.018 5.093-1.164 9.479-.668 13.036 1.512.395.241.523.757.281 1.15zm1.428-3.189c-.301.492-.938.647-1.43.346-3.603-2.215-9.13-2.827-13.687-1.543-.54.152-1.106-.162-1.258-.702-.152-.54.162-1.106.702-1.258 5.251-1.482 11.36-1.22 15.672 1.433.492.301.647.938.346 1.43zm.116-3.342C14.779 8.213 8.571 8 5.006 9.083c-.636.195-1.309-.163-1.504-.799-.195-.636.163-1.309.799-1.504 4.084-1.24 10.96-1.014 15.82 1.872.573.34.761 1.08.421 1.653-.34.573-1.08.761-1.653.421z"/></svg></a>
+                <a href="https://www.youtube.com/@coulouban369" target="_blank" class="text-gray-400 hover:text-emerald-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => { setTimeout(() => { document.getElementById('page-transition').style.opacity = '0'; }, 100); });
+        const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // =========================================================
+        // 3D ANIMATION: "THE ACCRETION RESONANCE"
+        // L'Équation CHLADNI CARÉE déformée par L'HYPER-GRAVITÉ D'UN TROU NOIR.
+        // Sécurisée contre le Black Screen, Z-Index 0 Maintenu. 
+        // =========================================================
+
+        let scene, camera, renderer, blackHoleMesh;
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+        const halfX = window.innerWidth / 2, halfY = window.innerHeight / 2;
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+            
+            // Caméra inclinée vers le bas et éloignée, comme on surplombe le fond spatial depuis le point "Sécuritaire"!
+            camera.position.y = 500; 
+            camera.position.z = 800; 
+            camera.lookAt(0, -200, 0); // Focus profond sur l'oeil noir (Accretion core). 
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            const pixelRatio = Math.min(window.devicePixelRatio, 1.5);
+            renderer.setPixelRatio(pixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // GÉOMÉTRIE = Cadrillage Dense Carré de l'équation Acoustique / Sablier d'effondrement..
+            const count = 90000;
+            const geo = new THREE.BufferGeometry();
+            
+            const positions = new Float32Array(count * 3);
+            const aPosNativeX = new Float32Array(count); // Capture en X (Plateau infini cartésien)
+            const aPosNativeZ = new Float32Array(count); // Capture en Y 
+            const randoms = new Float32Array(count); 
+
+            // Palette Cosmique Magistrale... Les notes graves très extérieures se mutent en or rouge absolu dans le centre / Accretion Horizon 
+            const maxL = 800.0; // Étendue max du damier (Limites cosmiques en "Champs" large..)
+
+            for (let i = 0; i < count; i++) {
+                
+                // Placement Aléatoire pur.. Couvrant une matrice carrée
+                let xP = (Math.random() - 0.5) * 2.0 * maxL; 
+                let zP = (Math.random() - 0.5) * 2.0 * maxL; 
+
+                // Optimisation visuelle "Bruit focal": Une plus forte proba de grain près du trou noir, c'est mieux que cartésien lisse .! 
+                let radPower = Math.random(); // Exponentiation légère de concentration des galaxies!
+                xP *= radPower; 
+                zP *= radPower;
+
+                positions[i*3] = xP;
+                positions[i*3+1] = 0; 
+                positions[i*3+2] = zP;
+                
+                aPosNativeX[i] = xP; 
+                aPosNativeZ[i] = zP; 
+                randoms[i] = Math.random();
+            }
+
+            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geo.setAttribute('nativeX', new THREE.BufferAttribute(aPosNativeX, 1));
+            geo.setAttribute('nativeZ', new THREE.BufferAttribute(aPosNativeZ, 1));
+            geo.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
+
+            // SHADER - Équation du "CHLADNI ASPIRÉ": Singularité centrale et Chladni classique extérieur 
+            const vShader = `
+                uniform float uTime;
+                uniform float uPixelRatio;
+                
+                attribute float nativeX;
+                attribute float nativeZ;
+                attribute float aRandom;
+                
+                varying float vElevation; // Reflets 
+                varying float vHorizonTension; // Colorisateur magique qui teinte d'un magma d'or/Rouge vif .! 
+
+                void main() {
+                    vec3 p = position;
+                    
+                    float horizonRadius = 80.0; // LA Singularitée/L'écho Central absolu de silence (Aucun poingt ni Y possible : P.y = Minus Lointaint!
+                    float distOrigin = length(vec2(nativeX, nativeZ)); 
+                    
+                    // ============================================
+                    // 1) FORME DE VIBRATION CHLADNI DE PLATEAU
+                    // Equations symétrique harmoniques classiques ! Mode (M=3, N=5)  =  (La Music ..) 
+                    // ============================================
+                    
+                    float scl = 0.009; // Le Zoom Spatial d'écroulement !! Lignes..
+                    float valCos1 = cos(5.0 * nativeX * scl) * cos(3.0 * nativeZ * scl);
+                    float valCos2 = cos(3.0 * nativeX * scl) * cos(5.0 * nativeZ * scl);
+                    
+                    // On bat en "Son Réel", les plateaux montent doucement via Utime de façon organique et dancante!
+                    float staticWave = (valCos1 * sin(uTime * 1.5) - valCos2 * cos(uTime * 1.5)) * 30.0;
+
+                    // ============================================
+                    // 2) TROU NOIR (Event Horizon) / ABERRATION GRAVITATIONELLE :
+                    // Etirement Infinit (Y plonge), Accelèration Sphérique !!
+                    // ============================================
+                    // La gravité croît de manières spectaculaires vers D=0. A D<100, Elle = Max 1.0!
+                    float gravityForce = smoothstep(550.0, horizonRadius, distOrigin); //  Plus ca s'apprche du 80, plus =100%.
+
+                    // Moteur Cyclonique!! Les notes se tordent en accélération Radiales en Approchant 
+                    float twiAngle = gravityForce * uTime * -4.0; // Spiralle intense ! 
+                    float cX = cos(twiAngle); float sZ = sin(twiAngle); 
+                    
+                    p.x = nativeX * cX - nativeZ * sZ; 
+                    p.z = nativeX * sZ + nativeZ * cX;
+
+                    // Chute Violentes.. -700 sur la composantes Extrêmen.. La chute éthérée "dans L'invisible".. "Le Dilatement."!  !  
+                    p.y = (staticWave * (1.0 - gravityForce)) - (pow(gravityForce, 2.5) * 800.0);
+
+                    // Poudre d'Aiguilles 
+                    p.y += (aRandom - 0.5) * 8.0; 
+
+                    // Projection Gl .. !! Garanti par sécurité contre Écran Vides et Vide Nul .!  Max est la..!   
+                    vec4 mvPos = modelViewMatrix * vec4(p, 1.0);
+                    gl_Position = projectionMatrix * mvPos;
+                    float safeZ = max(-mvPos.z, 1.0);
+                    
+                    gl_PointSize = (1.5 + (aRandom * 1.0)) * uPixelRatio * (800.0 / safeZ); 
+                    
+                    vElevation = staticWave; 
+                    vHorizonTension = gravityForce; // Pour pigmentations Or Rougeoyant.. Dechiquetées.
+                }
+            `;
+
+            // Le pigment Cosmique ! Loin = Violet Frequence // Pics Music = Cyan emeraud. Trou Noir Centre = Énormes Flames de Soleil Or Jaunes 
+            const fShader = `
+                varying float vElevation;
+                varying float vHorizonTension;
+
+                // Color Carts.. Absolu
+                uniform vec3 farBaseCosmos; 
+                uniform vec3 cymaticPeakPulse; 
+                uniform vec3 accretionEnergyBurn; 
+
+                void main() {
+                    float dist = distance(gl_PointCoord, vec2(0.5));
+                    if (dist > 0.5) discard;
+                    
+                    vec3 actualCymaticSpace; 
+                    
+                    // Interfère BleuSaphire Océan/Eméraud Cymatic des pointes Montagnardes...
+                    float elevateMix = smoothstep(0.0, 30.0, abs(vElevation)); // Montagne d'Echos.. Pos/Negative Peaks .
+                    actualCymaticSpace = mix(farBaseCosmos, cymaticPeakPulse, elevateMix * 0.8);
+                    
+                    // ============================================ //
+                    // ATTACTION LUMIERE "NOIRE". Dispariton Absolute + Explosion Energetiques Avant Horizon.. L'Horizon s'Efface = SILENCE // 
+                    // ============================================ //
+                    // GravityTension à 100% c'est Le NOIR ABSOLU (0) !!!
+                    vec3 finalVibrant = mix(actualCymaticSpace, accretionEnergyBurn, pow(vHorizonTension, 1.8));
+
+                    // L'étoile disparait par Fade au fur a mesutr . Dans La Fente : "vHorizon" est quasiement > 0.9 . ! = L'Éclipse ! Noir..  ! 
+                    float deathMask = 1.0 - smoothstep(0.9, 1.0, vHorizonTension); // La Coupure Du Point ! Fade au trou noir Pur (Le Souffle Muet) .
+
+                    float bCenterPulse = (0.5 - dist) * 2.5; 
+
+                    gl_FragColor = vec4(finalVibrant, bCenterPulse * deathMask); // Et Voila. Eclat Et Ombres .  
+                }
+            `;
+
+            const material = new THREE.ShaderMaterial({
+                vertexShader: vShader, fragmentShader: fShader,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uPixelRatio: { value: pixelRatio },
+                    farBaseCosmos: { value: new THREE.Color('#4c1d95') },     // Violet Pur - Les fréquences plates non-resonantes au Loin! (Lumière de l'Air) 
+                    cymaticPeakPulse: { value: new THREE.Color('#10b981') },   // Eméraud Intence "Acroustica Musical.. Les Ondes d'énergie pures". (Quitter Verticles). 
+                    accretionEnergyBurn: { value: new THREE.Color('#fcd34d') } // Explosion Or-Cuivre aux rives Infernale... Magnifique!! Avant Silence T_T !
+                },
+                transparent: true, depthWrite: false, blending: THREE.AdditiveBlending 
+            });
+
+            blackHoleMesh = new THREE.Points(geo, material);
+            
+            blackHoleMesh.position.y = -60; 
+            // Incliens leger de l'Etendu du disque spatials .. Pour donner toute L'immensitee!   
+            blackHoleMesh.rotation.x = Math.PI / 10; 
+            scene.add(blackHoleMesh);
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - halfX) * 0.001;
+                mouseY = (e.clientY - halfY) * 0.001;
+            });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        const clock = new THREE.Clock();
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            const time = clock.getElapsedTime();
+            
+            targetX = mouseX * 0.8; 
+            targetY = mouseY * 0.8;
+            
+            // Rotation Parallax très épurées
+            blackHoleMesh.rotation.x += 0.03 * (targetY - blackHoleMesh.rotation.x + Math.PI / 12); 
+            blackHoleMesh.rotation.z += 0.02 * (targetX - blackHoleMesh.rotation.z);
+            
+            // Dérive du Disques Sideraux - Le temps.  
+            blackHoleMesh.rotation.y += 0.0006; 
+
+            // C'EST L'INJECTION QUAND LA GRAVITEE ONDOLE  !  
+            blackHoleMesh.material.uniforms.uTime.value = time * 0.50; 
+            
+            renderer.render(scene, camera);
+        }
+
+        init3D();
+        animate3D();
+    </script>
+</body>
+</html>

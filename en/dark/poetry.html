@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" style="overflow-x: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Poetry - Coulouban</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        html, body { max-width: 100%; overflow-x: hidden; background-color: #030305; color: #fdfcf8; }
+        body { font-family: 'Montserrat', sans-serif; font-weight: 300; }
+        h1, h2, h3, .font-title { font-family: 'Cormorant Garamond', serif; }
+        
+        /* 3D Z-index: 0 Garanti DEVANT le fond noir. (Fond absolu du canvas de document.) */
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; opacity: 0.95; }
+        
+        #page-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #030305; z-index: 9999; pointer-events: none; transition: opacity 1.5s ease-in-out; }
+        
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .text-glow { text-shadow: 0 4px 30px rgba(0, 0, 0, 1), 0 0 50px rgba(0, 0, 0, 0.9); }
+
+        /* Charte Graphique */
+        .color-propos { color: #8b5cf6; } 
+        .color-poesie { color: #f59e0b; } /* Poetry gold */
+        .color-galerie { color: #ef4444; } 
+        .color-experience { color: #10b981; } 
+        .color-contact { color: #06b6d4; } 
+    </style>
+</head>
+<body class="antialiased selection:bg-amber-600 selection:text-white flex flex-col min-h-screen">
+
+    <div id="page-transition"></div>
+    <div id="canvas-container"></div>
+
+    <nav class="fixed w-full z-50 text-white bg-black/20 backdrop-blur-md border-b border-white/5 relative">
+                
+
+        <div class="max-w-7xl mx-auto px-6 md:px-8 py-6 flex justify-center md:justify-between items-center gap-4 md:gap-6 w-full">
+            <div class="flex items-center gap-4 md:gap-6">
+            <a href="home.html" class="text-3xl font-title tracking-widest uppercase hover:opacity-70 transition-opacity text-white">Coulouban</a>
+            <div class="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase font-medium border-l border-white/20 pl-4 md:pl-6 text-white">
+                <a href="../../fr/obscur/poesie.html" class="text-white/60 hover:text-white transition-colors">FR</a>
+                <span class="text-white/40">/</span>
+                <span class="text-white">EN</span>
+                <span class="text-white/40">/</span>
+                <a href="../../es/oscuro/poesia.html" class="text-white/60 hover:text-white transition-colors">ES</a>
+                <span class="text-white/40">/</span>
+                <a href="../../it/oscuro/poesia.html" class="text-white/60 hover:text-white transition-colors">IT</a>
+            </div>
+            </div>
+
+            <div class="hidden md:flex space-x-8 text-[10px] md:text-xs uppercase tracking-[0.3em] font-medium">
+                <a href="story.html" class="color-propos hover:text-white transition-colors drop-shadow-md">The Story</a>
+                <a href="poetry.html" class="color-poesie drop-shadow-md border-b border-amber-500 pb-1">Poetry</a>
+                <a href="gallery.html" class="color-galerie hover:text-white transition-colors drop-shadow-md">Gallery</a>
+                <a href="experience.html" class="color-experience hover:text-white transition-colors drop-shadow-md">The Experience</a>
+                <a href="contact.html" class="color-contact hover:text-white transition-colors drop-shadow-md">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Z-index: 10 garantissant la bonne mise en page audessus de la cymatique -->
+    <main class="relative z-10 pt-40 pb-32 px-6 md:px-12 max-w-7xl mx-auto flex flex-col space-y-32 flex-grow w-full">
+        
+        <header class="max-w-3xl text-left reveal text-glow">
+            <p class="text-[10px] md:text-xs tracking-[0.4em] color-poesie uppercase mb-6 drop-shadow-sm">The Word</p>
+            <h1 class="text-5xl md:text-7xl font-title leading-tight mb-8 text-white">
+                The ink and <br>
+                <span class="italic text-gray-500">the breath.</span>
+            </h1>
+        </header>
+
+        <section class="max-w-xl reveal text-glow">
+            <h2 class="text-4xl font-title mb-8 text-white">Naming the invisible</h2>
+            <div class="font-light text-gray-300 leading-relaxed text-lg space-y-6">
+                <p>
+                    Before note and color, there is the need to give a name. Writing is the first foundation, the first echo of the cave.
+                </p>
+                <p>
+                    Words are not mere reflections of Coulouban’s thought—they are its origin. They map his inner visions and trace the contours of the frequencies he is about to play.
+                </p>
+            </div>
+        </section>
+
+        <!-- Cadre orné côté Or du Poème (Flottant à droite de l'écran en PC et redescend au milieu pour Mibile) -->
+        <section class="max-w-xl reveal self-end text-right text-glow mt-12">
+            <h2 class="text-4xl font-title mb-10 text-white">Fragments of the soul</h2>
+            <div class="font-title font-light text-gray-300 text-2xl md:text-3xl leading-loose italic space-y-4 border-r-2 border-amber-500 pr-6 drop-shadow-md">
+                <p>"The wind rises where the rock falls silent,</p>
+                <p>Shadows dance, clarity is reborn.</p>
+                <p>What has no name on the surface,</p>
+                <p>Sings itself in breath and space."</p>
+            </div>
+        </section>
+
+        <section class="max-w-2xl mx-auto text-center reveal text-glow mt-20">
+            <h2 class="text-4xl font-title mb-8 text-white">Secular prayers</h2>
+            <div class="font-light text-gray-300 leading-relaxed text-lg space-y-6">
+                <p>
+                    His collections are not only read—they vibrate. Each poem is a seed, a mathematical sketch that will give birth to a cosmic icon or an accordion melody.
+                </p>
+                <p>
+                    It is a collection of silences captured in black ink on white paper, waiting for light to pass through them.
+                </p>
+            </div>
+            
+            <div class="mt-16">
+                <a href="gallery.html" class="inline-block border border-red-500 bg-black/40 backdrop-blur-sm px-10 py-5 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold color-galerie hover:text-white transition-colors drop-shadow-md">
+                    Discover the watercolors
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="w-full bg-[#020203] border-t border-white/10 text-white py-16 mt-auto z-20 relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center md:items-start space-y-10 md:space-y-0 text-center md:text-left">
+            <div class="flex flex-col items-center md:items-start space-y-4">
+                <span class="text-3xl font-title tracking-widest uppercase">Coulouban</span>
+                <span class="text-xs font-light tracking-[0.2em] text-gray-500 uppercase">The Translator of the Invisible</span>
+                <p class="text-[10px] tracking-[0.1em] text-gray-600 uppercase pt-4">© 2026 Coulouban. All rights reserved.</p>
+            </div>
+            <div class="flex flex-col items-center md:items-start space-y-3 text-xs tracking-[0.2em] uppercase font-medium">
+                <a href="story.html" class="color-propos hover:text-white transition-colors">The Story</a>
+                <a href="poetry.html" class="color-poesie hover:text-white transition-colors">Poetry</a>
+                <a href="gallery.html" class="color-galerie hover:text-white transition-colors">The Works</a>
+                <a href="experience.html" class="color-experience hover:text-white transition-colors">Concerts</a>
+                <a href="contact.html" class="color-contact hover:text-white transition-colors">Contact</a>
+                <a href="https://coulouban.shopify.com" target="_blank" class="text-orange-500 hover:text-white transition-colors mt-2">Shop</a>
+            </div>
+            <div class="flex space-x-6 items-center">
+                <!-- SVG Icones Reseaux Sociaux !-->
+                <a href="https://www.instagram.com/coulouban369/" target="_blank" class="text-gray-400 hover:text-cyan-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.77-6.98 6.276C.014 8.336 0 8.744 0 12c0 3.259.014 3.667.072 4.947.2 4.358 1.77 6.78 6.276 6.98 1.28.058 1.689.072 4.947.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.771 6.979-6.276.059-1.28.073-1.689.073-4.947 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.778-6.78-6.276-6.98-1.28-.058-1.688-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                <a href="https://www.youtube.com/@coulouban369" target="_blank" class="text-gray-400 hover:text-cyan-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg></a>
+                <a href="#" target="_blank" class="text-gray-400 hover:text-cyan-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.521 17.34c-.24.394-.756.522-1.15.281-3.15-1.926-7.114-2.361-11.782-1.293-.453.104-.913-.18-1.018-.632-.104-.453.18-.913.633-1.018 5.093-1.164 9.479-.668 13.036 1.512.395.241.523.757.281 1.15zm1.428-3.189c-.301.492-.938.647-1.43.346-3.603-2.215-9.13-2.827-13.687-1.543-.54.152-1.106-.162-1.258-.702-.152-.54.162-1.106.702-1.258 5.251-1.482 11.36-1.22 15.672 1.433.492.301.647.938.346 1.43zm.116-3.342C14.779 8.213 8.571 8 5.006 9.083c-.636.195-1.309-.163-1.504-.799-.195-.636.163-1.309.799-1.504 4.084-1.24 10.96-1.014 15.82 1.872.573.34.761 1.08.421 1.653-.34.573-1.08.761-1.653.421z"/></svg></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => { setTimeout(() => { document.getElementById('page-transition').style.opacity = '0'; }, 100); });
+        
+        const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // =========================================================
+        // L'ANIMATION : LE DISQUE MOIRÉ (Double Spirale de Chladni Transversale)
+        // Construction Tridimensionelle Absolue (Safe pour toute CGU Z= -MvPOS)
+        // =========================================================
+
+        let scene, camera, renderer, moireAcousticDisc;
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+        const halfX = window.innerWidth / 2, halfY = window.innerHeight / 2;
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2500);
+            
+            // Recul augmenté en position Haute για scruter l'étang Vibratoire dans toute sa largeur
+            camera.position.y = 350; 
+            camera.position.z = 600; 
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            const pixelRatio = Math.min(window.devicePixelRatio, 1.5);
+            renderer.setPixelRatio(pixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // ================== GÉNÉRATION DU DISQUE LISSE =====================
+            const count = 70000;
+            const geo = new THREE.BufferGeometry();
+            
+            const positions = new Float32Array(count * 3);
+            const thetas = new Float32Array(count); // Angle longitudinal
+            const radii = new Float32Array(count);  
+            const randoms = new Float32Array(count); 
+            const colors = new Float32Array(count * 3);
+
+            // Les nouvelles peintures organiques !
+            const colCore = new THREE.Color('#ffffff'); // Centre Silence de base (Aube de l'onde / Vide Noir/blanc)
+            const colA = new THREE.Color('#06b6d4'); // Onde Originelle LUZ Cyan !
+            const colB = new THREE.Color('#312e81'); // Violet Océan ultra Dark en creux et sommets éloignées !
+            const colC = new THREE.Color('#f59e0b'); // Les pointes soniques chauffent (Poetry Theme: Feu Or / Solaire !!!)
+            
+            const maxRadius = 600.0;
+
+            for (let i = 0; i < count; i++) {
+                // Rayon très équilibré. Racinaire "Disque d'Émeraude", plus on recule moins on densifie à la math. 
+                const r = Math.pow(Math.random(), 0.7) * maxRadius;
+                const th = Math.random() * Math.PI * 2.0;
+
+                radii[i] = r;
+                thetas[i] = th;
+                randoms[i] = Math.random();
+
+                // Plateau initial Plat
+                positions[i*3] = r * Math.cos(th);
+                positions[i*3+1] = 0; 
+                positions[i*3+2] = r * Math.sin(th);
+
+                // Palette dégradé par hauteur originelle pour une intégration très douce dans les vagues 3D.. 
+                let cBase = new THREE.Color();
+                if (r < 100.0) {
+                    cBase.lerpColors(colCore, colA, r / 100.0); // Le centre est l'origine du Nom de sa parole
+                } else if (r < 350.0) {
+                    cBase.lerpColors(colA, colB, (r - 100.0) / 250.0); // Il s'estompe naturellement de façon cosmique Violet .
+                } else {
+                    cBase.lerpColors(colB, colC, (r - 350.0) / 250.0); // Se lève comme un éveil Jaune ambre en lisière pour se marier !
+                }
+
+                colors[i*3] = cBase.r;
+                colors[i*3+1] = cBase.g;
+                colors[i*3+2] = cBase.b;
+            }
+
+            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geo.setAttribute('aTheta', new THREE.BufferAttribute(thetas, 1));
+            geo.setAttribute('aRadius', new THREE.BufferAttribute(radii, 1));
+            geo.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
+            geo.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
+
+            // ================== LES MATHÉMATIQUES ÉTHÉRÉES (Cymatics Spiral Crossing / Effet MOIRÉ ) =====================
+            const vShader = `
+                uniform float uTime;
+                uniform float uPixelRatio;
+                attribute float aTheta;
+                attribute float aRadius;
+                attribute float aRandom;
+                attribute vec3 aColor;
+                
+                varying vec3 vColor;
+                varying float vElevation; // Capteur pour sur-luminescence!
+
+                void main() {
+                    vec3 p = position;
+                    
+                    // --- NOVAE : LE MOIRÉ CYMATIQUE SONIQUE (The Sound Cross) --- 
+                    // 1ère onde spiralant au contact très rapide de temps T, avec une ouverture rayonnante
+                    float spiralR = sin((aTheta * 8.0) + (aRadius * 0.04) - uTime * 2.5);
+                    // 2ème onde d'intervention Inverse qui percute et crée une étoile vibratoire continue et complexe (Losanges/Quadrillage diamant) !! 
+                    float spiralL = cos((aTheta * -6.0) + (aRadius * 0.02) - uTime * 2.0); 
+
+                    // Combinaison! C'est de l'art par excellence pour une Poétique Musicale Chladnienne :
+                    float moire = (spiralR + spiralL) * 22.0;
+
+                    // Une onde fine centrale d'effilement ("L'Appel / Breathing Amplitude"): le centre bouillonne pour diffuser le message!
+                    float innerPump = cos(aRadius * 0.02 - uTime * 3.0) * 15.0;
+
+                    p.y = moire + innerPump;
+
+                    vec4 mvPos = modelViewMatrix * vec4(p, 1.0);
+                    gl_Position = projectionMatrix * mvPos;
+                    
+                    // LA PROTECTION TOTALE Contre Le BLACKSCREEN CUMULATIVEMENT PROUVÉ ! Z !
+                    float safeZ = max(-mvPos.z, 1.0);
+                    // Belles lueurs pures !
+                    gl_PointSize = (1.5 + (sin(aRadius * 0.01) * 0.5) + aRandom * 0.5) * uPixelRatio * (600.0 / safeZ);
+
+                    vElevation = p.y; 
+                    vColor = aColor; 
+                }
+            `;
+
+            // Le Moteur Visuel : Rend plus chaud le sommet de la "Platine Vibrante", saphir ses abysses! 
+            const fShader = `
+                varying vec3 vColor;
+                varying float vElevation;
+
+                // Passages locaux couleurs depuis Const variables, au niveau fragment
+                uniform vec3 heatPulse; // (Or brulant)
+                uniform vec3 shadowPulse; //(Nuit marine profonde / Grotte en dessous)
+                
+                void main() {
+                    // Petites bulles d'encres nettes parfaites! (Le poète Luz) 
+                    float dist = distance(gl_PointCoord, vec2(0.5));
+                    if (dist > 0.5) discard;
+                    
+                    vec3 endColor = vColor;
+                    // L'interférence Math: Plus les pics des vagues sonores montent Y positif sur sa plateforme (+40 pixels max env. ), l'énergie créee va muter radicalement le Pigment. 
+                    if(vElevation > 15.0) {
+                        float temp = smoothstep(15.0, 35.0, vElevation); // Températures croissantes
+                        endColor = mix(vColor, heatPulse, temp); 
+                    }
+                    if(vElevation < -15.0){
+                        float depth = smoothstep(-15.0, -35.0, vElevation); 
+                        endColor = mix(vColor, shadowPulse, depth); // Couleurs s'engloutissent avec son souffle .
+                    }
+
+                    // Scintillation! Si un losange cymatique vient se cogner au bord le halo du cristal grandit (Le verbe!)
+                    float coreBrilliance = (0.5 - dist) * 2.8; 
+                    gl_FragColor = vec4(endColor, coreBrilliance); 
+                }
+            `;
+
+            const material = new THREE.ShaderMaterial({
+                vertexShader: vShader, fragmentShader: fShader,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uPixelRatio: { value: pixelRatio },
+                    heatPulse: { value: new THREE.Color('#fbbf24') }, // Flash intense OR Jaune
+                    shadowPulse: { value: new THREE.Color('#312e81') } // Liseré nuit NoirViolet.. Absorbant!
+                },
+                transparent: true, depthWrite: false, blending: THREE.AdditiveBlending 
+            });
+
+            moireAcousticDisc = new THREE.Points(geo, material);
+            
+            // J'affine la platine sous nos écrans!
+            moireAcousticDisc.position.y = -35; 
+            moireAcousticDisc.rotation.x = Math.PI / 18; 
+            scene.add(moireAcousticDisc);
+
+            // Interaction Magnétique (Un mouvement majestueusement stable et serein). 
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - halfX) * 0.001;
+                mouseY = (e.clientY - halfY) * 0.001;
+            });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        const clock = new THREE.Clock();
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            const time = clock.getElapsedTime();
+            
+            // Tournement Gyroscope Naturel 
+            targetX = mouseX * 1.5; 
+            targetY = mouseY * 1.5;
+            
+            moireAcousticDisc.rotation.x += 0.03 * (targetY - moireAcousticDisc.rotation.x + Math.PI / 18); 
+            moireAcousticDisc.rotation.z += 0.03 * (targetX - moireAcousticDisc.rotation.z);
+
+            // Platine Mouvement Constellaire 
+            moireAcousticDisc.rotation.y += 0.0015; 
+
+            // ALIMENTER LA MACHINE! INJECTION ! (LE FLUIDE!)  
+            moireAcousticDisc.material.uniforms.uTime.value = time * 0.40; 
+            
+            renderer.render(scene, camera);
+        }
+
+        init3D();
+        animate3D();
+    </script>
+</body>
+</html>

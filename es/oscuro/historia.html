@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth" style="overflow-x: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Historia</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <!-- Polices -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Thème Dark Mode Cosmique */
+        html, body { max-width: 100%; overflow-x: hidden; background-color: #000000; color: #fdfcf8; }
+        
+        body { font-family: 'Montserrat', sans-serif; font-weight: 300; }
+        h1, h2, h3, .font-title { font-family: 'Cormorant Garamond', serif; }
+        
+        /* 3D CANVAS : Z-index 0 garanti pour être DEVANT le fond noir */
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; opacity: 0.9; }
+        
+        /* Transition */
+        #page-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #030305; z-index: 9999; pointer-events: none; transition: opacity 1.5s ease-in-out; }
+        
+        /* Apparition au scroll */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* Ombre ultra-douce pour faire ressortir le texte sur le vortex lumineux */
+        .text-glow { text-shadow: 0 4px 30px rgba(0, 0, 0, 1), 0 0 50px rgba(0, 0, 0, 0.9); }
+
+        /* Couleurs des liens */
+        .color-propos { color: #8b5cf6; } /* Violet */
+        .color-poesie { color: #f59e0b; } /* Jaune/Or */
+        .color-galerie { color: #ef4444; } /* Rouge */
+        .color-experience { color: #10b981; } /* Vert */
+        .color-contact { color: #06b6d4; } /* Cyan */
+    </style>
+</head>
+<body class="antialiased selection:bg-violet-700 selection:text-white flex flex-col min-h-screen">
+
+    <div id="page-transition"></div>
+    <div id="canvas-container"></div>
+
+    <!-- NAVBAR (z-index: 50) -->
+    <nav class="fixed w-full z-50 text-white bg-black/20 backdrop-blur-md border-b border-white/5 relative">
+                
+
+        <div class="max-w-7xl mx-auto px-6 md:px-8 py-6 flex justify-center md:justify-between items-center gap-4 md:gap-6 w-full">
+            <div class="flex items-center gap-4 md:gap-6">
+            <a href="home.html" class="text-3xl font-title tracking-widest uppercase hover:opacity-70 transition-opacity text-white">Coulouban</a>
+            <div class="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase font-medium border-l border-white/20 pl-4 md:pl-6 text-white">
+                <a href="../../fr/obscur/histoire.html" class="text-white/60 hover:text-white transition-colors">FR</a>
+                <span class="text-white/40">/</span>
+                <a href="../../en/dark/story.html" class="text-white/60 hover:text-white transition-colors">EN</a>
+                <span class="text-white/40">/</span>
+                <span class="text-white">ES</span>
+                <span class="text-white/40">/</span>
+                <a href="../../it/oscuro/storia.html" class="text-white/60 hover:text-white transition-colors">IT</a>
+            </div>
+            </div>
+
+            <div class="hidden md:flex space-x-8 text-[10px] md:text-xs uppercase tracking-[0.3em] font-medium">
+                <a href="historia.html" class="color-propos drop-shadow-md border-b border-violet-500 pb-1">Historia</a>
+                <a href="poesia.html" class="color-poesie hover:text-white transition-colors drop-shadow-md">Poesía</a>
+                <a href="galeria.html" class="color-galerie hover:text-white transition-colors drop-shadow-md">Galería</a>
+                <a href="experiencia.html" class="color-experience hover:text-white transition-colors drop-shadow-md">La experiencia</a>
+                <a href="contacto.html" class="color-contact hover:text-white transition-colors drop-shadow-md">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL (z-index: 10) -->
+    <main class="relative z-10 pt-40 pb-32 px-6 md:px-12 max-w-7xl mx-auto flex flex-col space-y-40 flex-grow w-full">
+        
+        <header class="max-w-3xl text-left reveal text-glow">
+            <p class="text-[10px] md:text-xs tracking-[0.4em] color-propos uppercase mb-6 drop-shadow-sm">Génesis</p>
+            <h1 class="text-5xl md:text-7xl font-title leading-tight mb-8 text-white">
+                La metamorfosis<br>
+                <span class="italic text-gray-500">del silencio.</span>
+            </h1>
+        </header>
+
+        <section class="max-w-2xl reveal text-glow">
+            <h2 class="text-4xl font-title mb-8 text-white">El vientre de la roca</h2>
+            <div class="font-light text-gray-300 leading-relaxed text-lg space-y-6">
+                <p>
+                    Hace muchos años, el tumulto del mundo se volvió demasiado pesado. Lucien se ocultó tras la roca para buscar lo que ya no se oía en la superficie.
+                </p>
+                <p>
+                    En el silencio absoluto de una cueva, sin relojes ni puntos de referencia, entabló una conversación íntima con el silencio. Allí, en ese crepúsculo fecundo envuelto en un sol divino, nació Coulouban. Un retiro aislado donde el instrumento ya no era un objeto, sino una prolongación de su alma, la misma con la que aprende a amar día tras día.
+                </p>
+            </div>
+        </section>
+
+        <section class="max-w-2xl reveal self-end text-right text-glow mt-12">
+            <h2 class="text-4xl font-title mb-8 text-white">La necesidad del sonido</h2>
+            <div class="font-light text-gray-300 leading-relaxed text-lg space-y-6">
+                <p>
+                    En tres días, en brazos de su primer acordeón, abrió una brecha en el espacio-tiempo. El tiempo del aprendizaje fue barrido por la necesidad del aliento.
+                </p>
+                <p>
+                    Desde entonces, ya no toca música en el sentido clásico: la deja pasar a través de él. Es el puente entre el silencio de la cueva y el caos del mundo moderno, convirtiendo el acordeón en difusor de frecuencias armónicas.
+                </p>
+            </div>
+        </section>
+
+        <section class="max-w-3xl mx-auto text-center reveal text-glow mt-20">
+            <h2 class="text-4xl font-title mb-8 text-white">Una orquesta invisible</h2>
+            <div class="font-light text-gray-300 leading-relaxed text-lg space-y-6">
+                <p>
+                    Lo que oye en el secreto de su mente es una simetría matemática, un lenguaje que las palabras a veces apenas pueden contener. Aquí comienza el resto de su obra. 
+                </p>
+                <p>
+                    Si no la toca, la escribe. Si no la escribe, la pinta.
+                </p>
+            </div>
+            
+            <div class="mt-16">
+                <a href="poesia.html" class="inline-block border border-amber-500 bg-black/40 backdrop-blur-sm px-10 py-5 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold color-poesie hover:text-white transition-colors drop-shadow-md">
+                    Descubrir la poesía
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER COMPLET (z-index: 20) -->
+    <footer class="w-full bg-[#020203] border-t border-white/10 text-white py-16 mt-auto z-20 relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center md:items-start space-y-10 md:space-y-0 text-center md:text-left">
+            <div class="flex flex-col items-center md:items-start space-y-4">
+                <span class="text-3xl font-title tracking-widest uppercase">Coulouban</span>
+                <span class="text-xs font-light tracking-[0.2em] text-gray-500 uppercase">El traductor de lo invisible</span>
+                <p class="text-[10px] tracking-[0.1em] text-gray-600 uppercase pt-4">© 2026 Coulouban. Todos los derechos reservados.</p>
+            </div>
+            <div class="flex flex-col items-center md:items-start space-y-3 text-xs tracking-[0.2em] uppercase font-medium">
+                <a href="historia.html" class="color-propos hover:text-white transition-colors">Historia</a>
+                <a href="poesia.html" class="color-poesie hover:text-white transition-colors">La poesía</a>
+                <a href="galeria.html" class="color-galerie hover:text-white transition-colors">Las obras</a>
+                <a href="experiencia.html" class="color-experience hover:text-white transition-colors">Los conciertos</a>
+                <a href="contacto.html" class="color-contact hover:text-white transition-colors">Contacto</a>
+                <a href="https://coulouban.shopify.com" target="_blank" class="text-orange-500 hover:text-white transition-colors mt-2">Tienda</a>
+            </div>
+            <div class="flex space-x-6 items-center">
+                <a href="https://www.instagram.com/coulouban369/" target="_blank" class="text-gray-400 hover:text-cyan-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.77-6.98 6.276C.014 8.336 0 8.744 0 12c0 3.259.014 3.667.072 4.947.2 4.358 1.77 6.78 6.276 6.98 1.28.058 1.689.072 4.947.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.771 6.979-6.276.059-1.28.073-1.689.073-4.947 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.778-6.78-6.276-6.98-1.28-.058-1.688-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4z"/></svg></a>
+                <a href="https://www.youtube.com/@coulouban369" target="_blank" class="text-gray-400 hover:text-cyan-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => { setTimeout(() => { document.getElementById('page-transition').style.opacity = '0'; }, 100); });
+        
+        const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // =========================================================
+        // 3D ANIMATION: "THE WATERCOLOR SILK" / La Toile de Soie Acoustique
+        // Un pur champ Plan (Square Plate) de l'Acoustique / Pinceau Magique Chladni. 
+        // Lignes Pures sans erreurs garanties z= -mvPosition + max().  
+        // =========================================================
+
+        let scene, camera, renderer, silkPlateMesh;
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+        const halfX = window.innerWidth / 2, halfY = window.innerHeight / 2;
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 3500);
+            
+            // Caméra de 3/4 vers le haut ! Pour que nous surplombions la tapisserie/carré poétique 
+            camera.position.y = 450; 
+            camera.position.z = 600; 
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            const pixelRatio = Math.min(window.devicePixelRatio, 1.5);
+            renderer.setPixelRatio(pixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // ================== GÉNÉRATION GÉOMÉTRIE (UNE VÉRITABLE TOILE) =====================
+            const count = 80000;
+            const geo = new THREE.BufferGeometry();
+            
+            const positions = new Float32Array(count * 3);
+            const xCoords = new Float32Array(count); // Pour passer les coos originels plats a l'equation 
+            const zCoords = new Float32Array(count);  
+            const randoms = new Float32Array(count); 
+            const colors = new Float32Array(count * 3);
+
+            // "Couleur Poème des Songes, la Soie et le Sang" (Inspiré Aquarelle / Rubis de l'écran!)
+            const colDeepCenter = new THREE.Color('#312e81'); // Violet océan Profond au coeur
+            const colInkBase = new THREE.Color('#06b6d4');   // Nébuleuse pure/ Encre classique
+            const colVividRed = new THREE.Color('#ef4444');  // Point de passion Feu, Peinturlurée au extremum..
+
+            // Base Un champ Math carré
+            const edgeLimit = 650.0;
+
+            for (let i = 0; i < count; i++) {
+                
+                // Distrib aléatoire Carrée. Simple! 
+                const xP = (Math.random() - 0.5) * 2.0 * edgeLimit;
+                const zP = (Math.random() - 0.5) * 2.0 * edgeLimit;
+                
+                // Permet aussi un leger affaissement central circulaire
+                const dLength = Math.sqrt(xP*xP + zP*zP);
+
+                positions[i*3] = xP;
+                positions[i*3+1] = 0; 
+                positions[i*3+2] = zP;
+                
+                xCoords[i] = xP; 
+                zCoords[i] = zP; 
+
+                // Precoloration Radial Douceur.. Peinture qui glisse au Bleu, au Feu au extremités...  ! 
+                let cMap = new THREE.Color();
+                if(dLength < 200.0){
+                    cMap.lerpColors(colDeepCenter, colInkBase, dLength / 200.0); 
+                }else {
+                    floatInter = (dLength - 200.0)/ (edgeLimit * 1.5);
+                    cMap.lerpColors(colInkBase, colVividRed, floatInter);
+                }
+
+                colors[i*3] = cMap.r;
+                colors[i*3+1] = cMap.g;
+                colors[i*3+2] = cMap.b;
+                
+                randoms[i] = Math.random();
+            }
+
+            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geo.setAttribute('aCoordX', new THREE.BufferAttribute(xCoords, 1));
+            geo.setAttribute('aCoordZ', new THREE.BufferAttribute(zCoords, 1));
+            geo.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
+            geo.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
+
+            // ================== LES MATHS VIBRANTES/CARRÉES CHLADNI ("Acoustic Aquarelle Canvas") =====================
+            const vShader = `
+                uniform float uTime;
+                uniform float uPixelRatio;
+                attribute float aCoordX;
+                attribute float aCoordZ;
+                attribute float aRandom;
+                attribute vec3 aColor;
+                
+                varying vec3 vColor;
+                varying float vElevation; // Brillance Néon 
+
+                void main() {
+                    vec3 p = position;
+                    
+                    // Fréquence spatiale globale adaptative / Pliage du ruban acoustique .. !
+                    float qX = aCoordX * 0.007; // Paramêtres des cosinus n! 
+                    float qZ = aCoordZ * 0.007; // m... 
+
+                    // LA PURE LOI CHLADNI DES PLAQUES METALIQUES 
+                    // Equation Carré 2D Acoustique Vibratoires 
+                    // ============================================
+                    float nodeN = 4.0;
+                    float nodeM = 5.0; 
+                    
+                    // La soustraction harmonie parfaite crée de lointains "noeuds symétriques au vent" (Des collines et cratères exacts d'Onde Acoustiques)! 
+                    float mode_One = cos(nodeN * qX - (uTime*0.5)) * cos(nodeM * qZ - (uTime*0.4));
+                    float mode_Two = cos(nodeM * qX + (uTime*0.6)) * cos(nodeN * qZ + (uTime*0.7)); 
+
+                    // Cymatics Vibration ! Lignes croisées géométriques au ralentis = Soie !! 
+                    float classic_cymatic_pulse = mode_One - mode_Two;
+
+                    // Une goute Liquide Additionelle: Effet D'Eau par-dessus tout pour aquareller .. L’onde circulaire continue.
+                    float waterDist = sqrt(aCoordX*aCoordX + aCoordZ*aCoordZ);
+                    float rainRipple = sin((waterDist * 0.02) - uTime * 2.0); 
+
+                    // Gonfle la Voile Zéroté (Plate en Y0 ) avec + Amplitude Cymatique Majeur ..! 
+                    p.y = (classic_cymatic_pulse * 45.0) + (rainRipple * 15.0);
+
+                    // Passage 3D Projection Cam
+                    vec4 mvPos = modelViewMatrix * vec4(p, 1.0);
+                    gl_Position = projectionMatrix * mvPos;
+                    
+                    // TACTIQUE ANTI BLACK SCREEN de rigueur de Sur-Aires.. : 
+                    float safeZ = max(-mvPos.z, 1.0);
+                    gl_PointSize = (1.5 + (aRandom * 0.8)) * uPixelRatio * (600.0 / safeZ);
+
+                    // Couleur transpiré sur la vague Z ! Le fragment est precolore du script, transité a ShaderF! 
+                    vColor = aColor;
+                    vElevation = p.y; 
+                }
+            `;
+
+            // Encre Peinte + GlFrag PURE COLOR.. = (Rouge Flambé sur sommets et l'inverse! 
+            const fShader = `
+                varying vec3 vColor;
+                varying float vElevation;
+
+                uniform vec3 burningPulse; // Sommets brûlés du pigment ROUGE/Feu .
+                
+                void main() {
+                    float dist = distance(gl_PointCoord, vec2(0.5));
+                    if (dist > 0.5) discard;
+                    
+                    vec3 finalCol = vColor; 
+                    
+                    // Onde Haute en Peinture .. Pigments mutés mathématiquement avec Y +40 !! 
+                    if(vElevation > 20.0){
+                        float warmness = smoothstep(20.0, 50.0, vElevation); // Grad. Températion..  
+                        finalCol = mix(vColor, burningPulse, warmness);
+                    }
+
+                    // Scintillation! Si sa bulle et monte ça éclaicit magique. 
+                    float softBright = (0.5 - dist) * 2.2; 
+                    
+                    // Un multiplicateur naturel (vElev en crêtes max = Très très clair (halo d'aquarelles diluées..) 
+                    float brillerElevate = 0.5 + 0.5 * ( (vElevation + 45.0)/ 90.0 );
+
+                    gl_FragColor = vec4(finalCol, softBright * brillerElevate); 
+                }
+            `;
+
+            const material = new THREE.ShaderMaterial({
+                vertexShader: vShader, fragmentShader: fShader,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uPixelRatio: { value: pixelRatio },
+                    burningPulse: { value: new THREE.Color('#fca5a5') } // Flamme Pure, Sang rouge pastel... Aquarelle
+                },
+                transparent: true, depthWrite: false, blending: THREE.AdditiveBlending // Effet Fluo Mousse Absolutiste
+            });
+
+            silkPlateMesh = new THREE.Points(geo, material);
+            
+            // Abaissement leger sous NavBar.. Et une tres belle perspective Iso .. (En angle "Plaque Acoustique Plate / Ecran "Canvas" Aquarelle  ..) 
+            silkPlateMesh.position.y = -70; 
+            // Douceur Basculement Visu "Ondes / Table de mix / Papier".. . 
+            silkPlateMesh.rotation.x = Math.PI / 16;  
+            scene.add(silkPlateMesh);
+
+            // Capteur Lignes / Vue 
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - halfX) * 0.001;
+                mouseY = (e.clientY - halfY) * 0.001;
+            });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        const clock = new THREE.Clock();
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            const time = clock.getElapsedTime();
+            
+            targetX = mouseX * 1.5; 
+            targetY = mouseY * 1.5;
+            
+            // "Cadrer L'Encre"! Le Plan est majestueusement Lissé..
+            silkPlateMesh.rotation.x += 0.03 * (targetY - silkPlateMesh.rotation.x + Math.PI / 12); 
+            // Rotation Y permet une tres Lente vue Hélicoptère Magnifique. Lévite .! 
+            silkPlateMesh.rotation.z += 0.02 * (targetX - silkPlateMesh.rotation.z);
+            
+            // Un poil du plateau complet / Temps... Mouvement du Monde LUZ . 
+            silkPlateMesh.rotation.y += 0.0015; 
+
+            // Injection temps .. Animation GlS! Le Fluide Coule! 
+            silkPlateMesh.material.uniforms.uTime.value = time * 0.50; 
+            
+            renderer.render(scene, camera);
+        }
+
+        init3D();
+        animate3D();
+    </script>
+</body>
+</html>

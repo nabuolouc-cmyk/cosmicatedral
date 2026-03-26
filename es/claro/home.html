@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth" style="overflow-x: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Coulouban - El traductor de lo invisible</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <!-- Polices -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Sécurité anti-débordement horizontal pour Safari Mobile */
+        html, body { max-width: 100%; overflow-x: hidden; }
+        body { margin: 0; background-color: #fdfcf8; font-family: 'Inter', sans-serif; color: #1a202c; }
+        h1, h2, h3, .font-playfair { font-family: 'Playfair Display', serif; }
+        
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.85; pointer-events: none; }
+        #page-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: white; z-index: 9999; pointer-events: none; transition: opacity 2s ease-in-out; }
+        
+        /* Texte géant : optimisation pour qu'il ne casse pas le layout mobile */
+        #bg-text {
+            position: fixed; top: 50%; left: 0; transform: translateY(-50%);
+            font-size: 25vw; white-space: nowrap; opacity: 0.03; z-index: -2;
+            pointer-events: none; font-family: 'Playfair Display', serif;
+        }
+        @media (min-width: 768px) {
+            #bg-text { font-size: 18vw; }
+        }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* Ajustements d'espacement pour les textes flottants sur mobile */
+        .text-shadow-light { text-shadow: 0 4px 12px rgba(253, 252, 248, 0.95), 0 0 20px rgba(253, 252, 248, 0.8); }
+    </style>
+</head>
+<body class="antialiased selection:bg-cyan-900 selection:text-white flex flex-col min-h-screen">
+
+    <div id="page-transition"></div>
+    <div id="canvas-container"></div>
+    <div id="bg-text">COULOUBAN • COULOUBAN • COULOUBAN • COULOUBAN</div>
+
+    <!-- Navbar Minimaliste -->
+    <nav class="fixed w-full z-50 mix-blend-difference text-white relative">
+        <!-- Sur mobile, on centre le logo s'il n'y a pas de menu -->
+                
+
+        <div class="max-w-7xl mx-auto px-6 md:px-8 py-6 flex justify-center md:justify-between items-center gap-4 md:gap-6 w-full">
+            <div class="flex items-center gap-4 md:gap-6">
+            <a href="home.html" class="text-2xl font-playfair tracking-widest uppercase hover:opacity-70 transition-opacity">Coulouban</a>
+            <div class="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase font-medium mix-blend-difference text-white border-l border-white/30 pl-4 md:pl-6">
+                <a href="../../fr/clair/home.html" class="text-white/60 hover:text-white transition-colors">FR</a>
+                <span class="text-white/40">/</span>
+                <a href="../../en/light/home.html" class="text-white/60 hover:text-white transition-colors">EN</a>
+                <span class="text-white/40">/</span>
+                <span class="text-white">ES</span>
+                <span class="text-white/40">/</span>
+                <a href="../../it/chiaro/home.html" class="text-white/60 hover:text-white transition-colors">IT</a>
+            </div>
+            </div>
+
+            <div class="hidden md:flex space-x-8 text-[10px] md:text-xs uppercase tracking-[0.3em] font-light">
+                <a href="historia.html" class="hover:text-cyan-400 transition-colors">Historia</a>
+                <a href="poesia.html" class="hover:text-cyan-400 transition-colors">Poesía</a>
+                <a href="galeria.html" class="hover:text-cyan-400 transition-colors">Galería</a>
+                <a href="experiencia.html" class="hover:text-cyan-400 transition-colors">La experiencia</a>
+                <a href="contacto.html" class="hover:text-cyan-400 transition-colors">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <main class="relative z-10 flex-grow w-full overflow-hidden">
+        
+        <!-- 0. INTRO -->
+        <!-- Ajustement des paddings et des tailles de texte pour mobile -->
+        <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-24 pb-20">
+            <p class="text-[10px] md:text-sm tracking-[0.4em] md:tracking-[0.5em] text-gray-500 uppercase mb-8 md:mb-12 reveal">
+                El traductor de lo invisible
+            </p>
+            
+            <h1 class="font-playfair leading-tight reveal w-full" style="transition-delay: 200ms;">
+                <span class="block font-sans text-sm sm:text-xl md:text-3xl font-light tracking-[0.2em] md:tracking-[0.3em] uppercase text-cyan-800 mb-4 md:mb-6">
+                    Nombrar la experiencia.
+                </span>
+                <!-- Réduction de la taille sur mobile (text-3xl au lieu de text-4xl) pour éviter la casse des mots -->
+                <span class="block text-3xl sm:text-5xl md:text-6xl lg:text-8xl text-black">
+                    Pintar la música.
+                </span>
+                <span class="block text-3xl sm:text-5xl md:text-6xl lg:text-8xl italic text-gray-400 mt-2">
+                    Hacer cantar la luz.
+                </span>
+            </h1>
+        </section>
+
+        <!-- 1. À PROPOS -->
+        <!-- Les sections s'alignent automatiquement au centre sur mobile, et sur les côtés sur grand écran -->
+        <section class="min-h-screen flex items-center md:justify-start px-6 md:px-24">
+            <div class="max-w-xl reveal text-center md:text-left mx-auto md:mx-0 text-shadow-light">
+                <span class="text-[10px] md:text-xs tracking-[0.4em] text-gray-400 uppercase mb-4 block">Capítulo I</span>
+                <h2 class="text-3xl md:text-5xl font-playfair mb-6 leading-tight">La metamorfosis<br>del silencio</h2>
+                <p class="text-base md:text-lg font-light text-gray-600 mb-8 leading-relaxed">
+                    Hace siete años, Lucien se desvaneció tras la roca. En el vientre de una cueva, lejos de los relojes, entabló una conversación con el silencio. El tiempo del aprendizaje fue barrido por la necesidad del aliento.
+                </p>
+                <a href="historia.html" class="uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold border-b border-black pb-2 hover:text-cyan-700 hover:border-cyan-700 transition-all">Descubrir la historia</a>
+            </div>
+        </section>
+
+        <!-- 2. POÉSIE -->
+        <section class="min-h-screen flex items-center md:justify-end px-6 md:px-24 text-center md:text-right">
+            <div class="max-w-xl reveal mx-auto md:mx-0 text-shadow-light">
+                <span class="text-[10px] md:text-xs tracking-[0.4em] text-gray-400 uppercase mb-4 block">Capítulo II</span>
+                <h2 class="text-3xl md:text-5xl font-playfair mb-6 leading-tight">La tinta<br>y el aliento</h2>
+                <p class="text-base md:text-lg font-light text-gray-600 mb-8 leading-relaxed">
+                    Antes de la nota y el color, está la necesidad de nombrar. Las palabras no son simples reflejos: son el origen. Los poemas de Coulouban son plegarias laicas tendidas sobre el papel.
+                </p>
+                <a href="poesia.html" class="uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold border-b border-black pb-2 hover:text-cyan-700 hover:border-cyan-700 transition-all">Leer los fragmentos</a>
+            </div>
+        </section>
+
+        <!-- 3. GALERIE -->
+        <section class="min-h-screen flex items-center md:justify-start px-6 md:px-24 text-center md:text-left">
+            <div class="max-w-xl reveal mx-auto md:mx-0 text-shadow-light">
+                <span class="text-[10px] md:text-xs tracking-[0.4em] text-gray-400 uppercase mb-4 block">Capítulo III</span>
+                <h2 class="text-3xl md:text-5xl font-playfair mb-6 leading-tight">La acuarela<br>de los sonidos</h2>
+                <p class="text-base md:text-lg font-light text-gray-600 mb-8 leading-relaxed">
+                    La frontera entre las artes no existe. Lo que oye en el secreto de su mente es una simetría matemática. Si no la toca, la pinta. Sus lienzos son el rostro de sus melodías.
+                </p>
+                <a href="galeria.html" class="uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold border-b border-black pb-2 hover:text-cyan-700 hover:border-cyan-700 transition-all">Explorar los iconos</a>
+            </div>
+        </section>
+
+        <!-- 4. L'EXPÉRIENCE -->
+        <section class="min-h-screen flex items-center md:justify-end px-6 md:px-24 text-center md:text-right pb-32">
+            <div class="max-w-xl reveal mx-auto md:mx-0 text-shadow-light">
+                <span class="text-[10px] md:text-xs tracking-[0.4em] text-gray-400 uppercase mb-4 block">Capítulo IV</span>
+                <h2 class="text-3xl md:text-5xl font-playfair mb-6 leading-tight">Dejar la<br>vertical</h2>
+                <p class="text-base md:text-lg font-light text-gray-600 mb-8 leading-relaxed">
+                    Su acordeón no es un instrumento: es un difusor de frecuencia. En sus conciertos, el espacio se dilata. El público se reclina, se abandona y se sumerge en un estado hipnótico.
+                </p>
+                <a href="experiencia.html" class="uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold border-b border-black pb-2 hover:text-cyan-700 hover:border-cyan-700 transition-all">Vivir la experiencia</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- FOOTER PROFESSIONNEL                       -->
+    <!-- ========================================== -->
+    <footer class="w-full bg-[#0a0a0a] text-white py-16 mt-auto z-20 relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center md:items-start space-y-10 md:space-y-0 text-center md:text-left">
+            
+            <!-- Marque & Copyright -->
+            <div class="flex flex-col items-center md:items-start space-y-4">
+                <span class="text-3xl font-playfair tracking-widest uppercase">Coulouban</span>
+                <span class="text-xs font-light tracking-[0.2em] text-gray-500 uppercase">El traductor de lo invisible</span>
+                <p class="text-[10px] tracking-[0.1em] text-gray-600 uppercase pt-4">© 2026 Coulouban. Todos los derechos reservados.</p>
+            </div>
+
+            <!-- Liens Rapides -->
+            <div class="flex flex-col items-center md:items-start space-y-3 text-xs tracking-[0.2em] uppercase font-light text-gray-400">
+                <a href="historia.html" class="hover:text-cyan-400 transition-colors">Historia</a>
+                <a href="poesia.html" class="hover:text-cyan-400 transition-colors">La poesía</a>
+                <a href="galeria.html" class="hover:text-cyan-400 transition-colors">Las obras</a>
+                <a href="experiencia.html" class="hover:text-cyan-400 transition-colors">Los conciertos</a>
+                <a href="contacto.html" class="hover:text-cyan-400 transition-colors">Contacto</a>
+                <a href="https://coulouban.shopify.com" target="_blank" class="hover:text-cyan-400 transition-colors">Tienda</a>
+            </div>
+
+            <!-- Réseaux Sociaux -->
+            <div class="flex space-x-6 items-center justify-center">
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/coulouban369/" target="_blank" aria-label="Instagram" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.77-6.98 6.276C.014 8.336 0 8.744 0 12c0 3.259.014 3.667.072 4.947.2 4.358 1.77 6.78 6.276 6.98 1.28.058 1.689.072 4.947.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.771 6.979-6.276.059-1.28.073-1.689.073-4.947 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.778-6.78-6.276-6.98-1.28-.058-1.688-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+                <!-- YouTube -->
+                <a href="https://www.youtube.com/@coulouban369" target="_blank" aria-label="YouTube" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Transition fondu
+        window.addEventListener('load', () => {
+            setTimeout(() => { document.getElementById('page-transition').style.opacity = '0'; }, 100);
+        });
+
+        // Texte géant au scroll
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            document.getElementById('bg-text').style.transform = `translateY(-50%) translateX(${-scrollY * 0.4}px)`;
+        });
+
+        // Apparition des éléments
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // --- SHADERS PIXELS CARRES ORIGINAUX ---
+        const vShader = `
+            uniform float uTime; uniform float uRadius;
+            attribute float aPhi; attribute float aTheta; attribute float aSpeedFactor;
+            varying vec3 vColor; attribute vec3 aColor;
+            void main() {
+                float currentTheta = aTheta + uTime * 0.03 * aSpeedFactor;
+                vec3 pos;
+                pos.x = uRadius * sin(aPhi) * cos(currentTheta);
+                pos.y = uRadius * sin(aPhi) * sin(currentTheta);
+                pos.z = uRadius * cos(aPhi);
+                
+                vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                gl_Position = projectionMatrix * mvPosition;
+                gl_PointSize = uRadius < 100.0 ? 1.0 : (uRadius < 300.0 ? 1.2 : 1.5); 
+                vColor = aColor;
+            }
+        `;
+        const fShader = `
+            uniform float uOpacity; varying vec3 vColor;
+            void main() { gl_FragColor = vec4(vColor, uOpacity); }
+        `;
+
+        let scene, camera, renderer, particlesGroup;
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.z = 900;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            particlesGroup = new THREE.Group();
+            scene.add(particlesGroup);
+
+            function createSphere(radius, count, opacity) {
+                const geo = new THREE.BufferGeometry();
+                const pos = new Float32Array(count * 3);
+                const phi = new Float32Array(count);
+                const theta = new Float32Array(count);
+                const speed = new Float32Array(count);
+                const colors = new Float32Array(count * 3);
+
+                const palette =[ new THREE.Color('#0f172a'), new THREE.Color('#0891b2'), new THREE.Color('#b45309') ];
+
+                for (let i = 0; i < count; i++) {
+                    const p = Math.acos(-1 + (2 * i) / count);
+                    const t = Math.sqrt(count * Math.PI) * p;
+                    phi[i] = p + (Math.random() - 0.5) * 0.05;
+                    theta[i] = t;
+                    speed[i] = 0.5 + Math.random() * 1.5;
+
+                    pos[i*3] = radius * Math.sin(p) * Math.cos(t);
+                    pos[i*3+1] = radius * Math.sin(p) * Math.sin(t);
+                    pos[i*3+2] = radius * Math.cos(p);
+
+                    const col = palette[Math.floor(Math.random() * palette.length)];
+                    colors[i*3] = col.r; colors[i*3+1] = col.g; colors[i*3+2] = col.b;
+                }
+                geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                geo.setAttribute('aPhi', new THREE.BufferAttribute(phi, 1));
+                geo.setAttribute('aTheta', new THREE.BufferAttribute(theta, 1));
+                geo.setAttribute('aSpeedFactor', new THREE.BufferAttribute(speed, 1));
+                geo.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
+
+                return new THREE.Points(geo, new THREE.ShaderMaterial({
+                    vertexShader: vShader, fragmentShader: fShader,
+                    uniforms: { uTime: { value: 0 }, uRadius: { value: radius }, uOpacity: { value: opacity } },
+                    transparent: true, blending: THREE.NormalBlending, depthWrite: false
+                }));
+            }
+
+            particlesGroup.add(createSphere(80, 20000, 0.7));  
+            particlesGroup.add(createSphere(200, 15000, 0.4)); 
+            particlesGroup.add(createSphere(400, 10000, 0.3)); 
+            particlesGroup.add(createSphere(650, 8000, 0.15)); 
+
+            // Désactivation temporaire de l'effet de zoom au scroll sur mobile pour la fluidité
+            const isMobile = window.innerWidth < 768;
+            
+            if (!isMobile) {
+                window.addEventListener('scroll', () => {
+                    const scrollProgress = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+                    particlesGroup.rotation.x = scrollProgress * 1.5; 
+                    camera.position.z = 900 - (scrollProgress * 400); 
+                });
+            }
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        const clock = new THREE.Clock();
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            const time = clock.getElapsedTime();
+            
+            particlesGroup.children.forEach((child, index) => {
+                child.material.uniforms.uTime.value = time;
+                if(index === 0) child.rotation.y += 0.0010; 
+                if(index === 1) child.rotation.y -= 0.0005; 
+                if(index === 2) child.rotation.y += 0.0008;
+                if(index === 3) { child.rotation.y += 0.0003; child.rotation.z += 0.0002; }
+            });
+            
+            renderer.render(scene, camera);
+        }
+
+        init3D(); animate3D();
+    </script>
+</body>
+</html>
