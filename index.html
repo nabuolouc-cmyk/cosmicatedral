@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr" style="overflow-x: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Coulouban - Le Sablier cosmique</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <!-- Polices Muséales -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        html, body { margin: 0; max-width: 100%; overflow: hidden; background-color: #000000; font-family: 'Montserrat', sans-serif; user-select: none; }
+        .font-title { font-family: 'Cormorant Garamond', serif; }
+        
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; opacity: 1; }
+        
+        /* OVERLAY 1 : Le Portail Clair (Quand on Zoom vers l'intérieur) */
+        #flash-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: #fdfcf8; 
+            z-index: 100; pointer-events: none; opacity: 0; transition: opacity 0.1s ease;
+        }
+
+        /* OVERLAY 2 : Le Portail Sombre (Quand on recule à l'infini) */
+        #dark-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: #000000; 
+            z-index: 99; pointer-events: none; opacity: 0; transition: opacity 0.1s ease;
+        }
+        
+        .overlay-text { 
+            position: relative; z-index: 110; pointer-events: none; 
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+
+        .glow-title { text-shadow: 0 4px 40px rgba(0,0,0, 0.9), 0 0 80px rgba(0,243,255, 0.2); }
+        .no-glow { text-shadow: none; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="fixed top-5 left-5 z-[120] pointer-events-auto flex items-center gap-4 md:gap-6 text-[10px] md:text-xs tracking-[0.25em] uppercase font-medium">
+        <span class="font-title text-sm md:text-base tracking-[0.25em] text-white/90 glow-title">Coulouban</span>
+        <div class="flex items-center gap-2 text-gray-400 border-l border-white/20 pl-4 md:pl-6">
+            <span class="text-cyan-400/90">FR</span>
+            <span class="text-gray-600">/</span>
+            <a href="index-en.html" class="text-gray-500 hover:text-cyan-400 transition-colors">EN</a>
+            <span class="text-gray-600">/</span>
+            <a href="index-es.html" class="text-gray-500 hover:text-cyan-400 transition-colors">ES</a>
+            <span class="text-white/40">/</span>
+            <a href="index-it.html" class="text-white/60 hover:text-white transition-colors">IT</a>
+        </div>
+    </div>
+
+    <div id="flash-overlay"></div>
+    <div id="dark-overlay"></div>
+    <div id="canvas-container"></div>
+
+    <div class="overlay-text px-4">
+        <!-- Titrage central -->
+        <h1 id="title" class="text-5xl md:text-8xl font-title font-light tracking-[0.25em] uppercase text-white/95 glow-title transition-colors duration-[800ms] ml-[0.25em]">
+            Coulouban
+        </h1>
+        <p id="subtitle" class="mt-8 text-[10px] md:text-sm tracking-[0.6em] text-cyan-400 font-medium uppercase opacity-75 transition-opacity duration-700 glow-title">
+            Le Traducteur de l'Invisible
+        </p>
+        
+        <!-- Indications dynamiques (discrètes et élégantes) -->
+        <p id="scroll-hint-down" class="absolute bottom-16 text-[9px] md:text-xs tracking-[0.4em] uppercase text-gray-500/80 animate-pulse transition-opacity duration-500">
+            Plongez vers la lumière (Mode Clair)
+        </p>
+        <p id="scroll-hint-up" class="absolute top-16 text-[9px] md:text-xs tracking-[0.4em] uppercase text-gray-500/80 animate-pulse transition-opacity duration-500 opacity-50">
+            Ou reculez dans les ombres (Mode Sombre)
+        </p>
+    </div>
+
+    <script>
+        // =========================================================
+        // LE LOTUS QUANTIQUE (Harmoniques Sphériques)
+        // =========================================================
+
+        let scene, camera, renderer, lotusMesh;
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+        const halfX = window.innerWidth / 2, halfY = window.innerHeight / 2;
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 4000);
+            camera.position.z = 1000; 
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            const pixelRatio = Math.min(window.devicePixelRatio, 1.5);
+            renderer.setPixelRatio(pixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            const count = 75000; 
+            const geo = new THREE.BufferGeometry();
+            
+            const positions = new Float32Array(count * 3);
+            const harmonics = new Float32Array(count); 
+            const randoms = new Float32Array(count); 
+            const colors = new Float32Array(count * 3);
+
+            // Palette d'entrée lumineuse 
+            const colorDeepVoid = new THREE.Color('#4c1d95'); 
+            const colorPassion = new THREE.Color('#e11d48');   
+            const colorFluidity = new THREE.Color('#06b6d4');   
+            const colorCulmination = new THREE.Color('#fbbf24'); 
+
+            for (let i = 0; i < count; i++) {
+                const u = Math.random() * Math.PI; 
+                const v = Math.random() * Math.PI * 2.0; 
+                const resonantDisplacement = Math.sin(5.0 * u) * Math.cos(4.0 * v); 
+                const radiusBase = 350.0;
+                const r = radiusBase + (150.0 * resonantDisplacement);
+
+                let xP = r * Math.sin(u) * Math.cos(v);
+                let yP = r * Math.cos(u);
+                let zP = r * Math.sin(u) * Math.sin(v);
+
+                const sprinkle = (Math.random() - 0.5) * 35.0; 
+
+                positions[i*3] = xP + sprinkle;
+                positions[i*3+1] = yP + sprinkle;
+                positions[i*3+2] = zP + sprinkle;
+
+                harmonics[i] = resonantDisplacement; 
+                randoms[i] = Math.random();
+
+                let cl = new THREE.Color();
+                if (resonantDisplacement < -0.3) {
+                    cl.lerpColors(colorDeepVoid, colorPassion, (resonantDisplacement + 1.0) / 0.7); 
+                } else if (resonantDisplacement < 0.4) {
+                    cl.lerpColors(colorPassion, colorFluidity, (resonantDisplacement + 0.3) / 0.7); 
+                } else {
+                    cl.lerpColors(colorFluidity, colorCulmination, (resonantDisplacement - 0.4) / 0.6); 
+                }
+
+                colors[i*3] = cl.r; colors[i*3+1] = cl.g; colors[i*3+2] = cl.b;
+            }
+
+            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geo.setAttribute('aHarmonic', new THREE.BufferAttribute(harmonics, 1));
+            geo.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
+            geo.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
+
+            const vShader = `
+                uniform float uTime;
+                uniform float uPixelRatio;
+                attribute float aHarmonic;
+                attribute float aRandom;
+                attribute vec3 aColor;
+                varying vec3 vColor;
+                varying float vAlpha;
+
+                void main() {
+                    vec3 p = position;
+                    vec3 dir = normalize(p);
+                    
+                    float breathPulse = sin(uTime * 1.5 + aHarmonic * 3.14) * 20.0; 
+                    p += dir * breathPulse;
+
+                    float twist = p.y * 0.001 + (uTime * 0.15); 
+                    float cTwist = cos(twist); float sTwist = sin(twist); 
+                    
+                    float nx = cTwist * p.x - sTwist * p.z; 
+                    float nz = sTwist * position.x + cTwist * p.z; 
+                    p.x = nx; p.z = nz;
+
+                    vec4 mvPos = modelViewMatrix * vec4(p, 1.0);
+                    gl_Position = projectionMatrix * mvPos;
+                    
+                    float safeZ = max(-mvPos.z, 1.0);
+                    gl_PointSize = (1.5 + (aRandom * 1.2)) * uPixelRatio * (650.0 / safeZ); 
+                    
+                    vColor = aColor; 
+                    vAlpha = 0.35 + 0.65 * sin(uTime * 3.0 + aRandom * 80.0);
+                }
+            `;
+
+            const fShader = `
+                varying vec3 vColor;
+                varying float vAlpha;
+
+                void main() {
+                    float dist = distance(gl_PointCoord, vec2(0.5));
+                    if (dist > 0.5) discard;
+                    float brightness = (0.5 - dist) * 2.8; 
+                    gl_FragColor = vec4(vColor, brightness * vAlpha);
+                }
+            `;
+
+            const material = new THREE.ShaderMaterial({
+                vertexShader: vShader, fragmentShader: fShader,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uPixelRatio: { value: pixelRatio }
+                },
+                transparent: true, depthWrite: false, blending: THREE.AdditiveBlending 
+            });
+
+            lotusMesh = new THREE.Points(geo, material);
+            scene.add(lotusMesh);
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - halfX) * 0.001;
+                mouseY = (e.clientY - halfY) * 0.001;
+            });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // =========================================================
+        // LE SYSTÈME DE DOUBLE PORTAIL (Zoom Clair / Zoom Sombre)
+        // =========================================================
+
+        let zoomTarget = 1000; 
+        const MIN_ZOOM = -200;    // Fond du cœur : Redirection MODE CLAIR
+        const MAX_ZOOM = 2100;    // Recul maximum dans le vide : Redirection MODE SOMBRE
+
+        document.addEventListener('wheel', (e) => {
+            zoomTarget -= e.deltaY * 1.5; 
+            zoomTarget = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomTarget));
+        });
+
+        // Capter l'écran tactile pour scroller (Mobiles/Tablettes)
+        let touchStartY = 0;
+        document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, {passive: false});
+        document.addEventListener('touchmove', e => {
+            let deltaY = touchStartY - e.touches[0].clientY;
+            zoomTarget -= deltaY * 2.0; 
+            zoomTarget = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomTarget));
+            touchStartY = e.touches[0].clientY; // reset progressif
+        }, {passive: false});
+
+        const flashOverlay = document.getElementById('flash-overlay');
+        const darkOverlay = document.getElementById('dark-overlay');
+        const titleLink = document.getElementById('title');
+        const subtitle = document.getElementById('subtitle');
+        const hintDown = document.getElementById('scroll-hint-down');
+        const hintUp = document.getElementById('scroll-hint-up');
+
+        let isRedirecting = false; 
+
+        const clock = new THREE.Clock();
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            const time = clock.getElapsedTime();
+            
+            targetX = mouseX * 0.8;
+            targetY = mouseY * 0.8;
+            lotusMesh.rotation.x += 0.03 * (targetY - lotusMesh.rotation.x);
+            lotusMesh.rotation.y += 0.03 * (targetX - lotusMesh.rotation.y);
+            lotusMesh.rotation.z -= 0.002; 
+            lotusMesh.rotation.x += 0.0005;
+
+            lotusMesh.material.uniforms.uTime.value = time * 0.5;
+
+            // Déplacement lissé
+            camera.position.z += (zoomTarget - camera.position.z) * 0.05;
+            let currentZ = camera.position.z;
+            
+            // ----------------------------------------
+            // 1. CALCUL POUR LE PORTAIL DE LUMIÈRE (Zoom IN)
+            // ----------------------------------------
+            let flashPower = 0.0;
+            if (currentZ < 450.0) {
+                flashPower = 1.0 - ((currentZ - MIN_ZOOM) / (450.0 - MIN_ZOOM));
+                flashPower = Math.max(0.0, Math.min(1.0, flashPower));
+            }
+            flashOverlay.style.opacity = flashPower;
+
+            // Effets esthétiques pendant le flash blanc
+            if (flashPower > 0.65) {
+                titleLink.classList.remove('text-white/95', 'glow-title');
+                titleLink.classList.add('text-black', 'no-glow');
+                subtitle.classList.remove('opacity-75');
+                subtitle.classList.add('opacity-0');
+            } else {
+                titleLink.classList.add('text-white/95', 'glow-title');
+                titleLink.classList.remove('text-black', 'no-glow');
+                subtitle.classList.remove('opacity-0');
+                subtitle.classList.add('opacity-75');
+            }
+
+            // REDIRECTION MODE CLAIR
+            if (flashPower > 0.98 && !isRedirecting) {
+                isRedirecting = true;
+                window.location.href = "./fr/clair/home.html"; // <-- METTEZ ICI LE LIEN DE VOTRE PAGE D'ACCUEIL CLAIRE !
+            }
+
+            // ----------------------------------------
+            // 2. CALCUL POUR LE PORTAIL OBSCUR (Zoom OUT)
+            // ----------------------------------------
+            let darkPower = 0.0;
+            if (currentZ > 1700.0) {
+                darkPower = (currentZ - 1700.0) / (MAX_ZOOM - 1700.0);
+                darkPower = Math.max(0.0, Math.min(1.0, darkPower));
+            }
+            darkOverlay.style.opacity = darkPower;
+
+            // L'extinction progressive du texte pour se fondre dans le vide
+            if(darkPower > 0.2) {
+                titleLink.style.opacity = Math.max(0, 1.0 - (darkPower * 1.5));
+                subtitle.style.opacity = Math.max(0, 1.0 - (darkPower * 2.0));
+            } else {
+                titleLink.style.opacity = 1.0;
+            }
+
+            // REDIRECTION MODE SOMBRE
+            if (darkPower > 0.98 && !isRedirecting) {
+                isRedirecting = true;
+                window.location.href = "./fr/obscur/home.html"; // <-- METTEZ ICI LE LIEN DE VOTRE PAGE D'ACCUEIL SOMBRE !
+            }
+
+            // Disparition douce des indices si on s'éloigne trop de la base
+            if (flashPower > 0.05 || darkPower > 0.05) {
+                hintDown.style.opacity = '0';
+                hintUp.style.opacity = '0';
+            } else {
+                hintDown.style.opacity = '1';
+                hintUp.style.opacity = '0.5';
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        init3D();
+        animate3D();
+    </script>
+</body>
+</html>
